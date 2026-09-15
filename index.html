@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📒</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%92</text></svg>">
 <title>Its Just Crypto — Crypto Accounting Standards Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -50,6 +50,8 @@
 
   * { box-sizing: border-box; }
 
+  html { scroll-behavior: smooth; }
+
   body {
     background: var(--paper);
     color: var(--ink);
@@ -58,6 +60,17 @@
     padding: 0;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
+  }
+
+  /* progress bar */
+  #progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: var(--accent-iasb);
+    z-index: 50;
+    transition: width 0.1s linear;
   }
 
   .wrap {
@@ -69,7 +82,32 @@
   header.masthead {
     border-bottom: 3px double var(--rule-strong);
     padding-bottom: 28px;
-    margin-bottom: 40px;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .hero-mark {
+    position: absolute;
+    top: 4px;
+    right: 0;
+    width: 92px;
+    height: 92px;
+    color: var(--ink-soft);
+    opacity: 0.55;
+  }
+
+  .hero-mark svg {
+    width: 100%;
+    height: 100%;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (max-width: 640px) {
+    .hero-mark { display: none; }
   }
 
   .masthead-top {
@@ -105,21 +143,38 @@
     margin: 28px 0 0;
   }
 
-  .legend {
+  /* filter chips */
+  .filters {
     display: flex;
     flex-wrap: wrap;
-    gap: 18px;
+    gap: 10px;
     margin-top: 26px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
   }
 
-  .legend-item {
-    display: flex;
+  .chip {
+    display: inline-flex;
     align-items: center;
     gap: 7px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
     color: var(--ink-soft);
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    border-radius: 100px;
+    padding: 6px 13px 6px 10px;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
   }
+
+  .chip:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+  .chip[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+    border-color: var(--ink);
+  }
+
+  .chip[aria-pressed="true"] .dot { filter: brightness(1.6); }
 
   .dot {
     width: 9px;
@@ -132,26 +187,98 @@
   .dot.fasb { background: var(--accent-fasb); }
   .dot.aicpa { background: var(--accent-aicpa); }
 
-  section.log { margin-top: 8px; }
+  .log-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-bottom: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+  }
+
+  .toggle-all {
+    background: none;
+    border: none;
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .toggle-all:hover { color: var(--ink); }
+
+  section.log { margin-top: 0; }
 
   .entry {
-    display: grid;
-    grid-template-columns: 56px 1fr;
-    gap: 20px;
-    padding: 30px 0;
     border-bottom: 1px solid var(--rule);
+    padding: 26px 0;
+    transition: opacity 0.2s ease;
   }
 
   .entry:first-of-type { padding-top: 0; }
 
-  .entry-num {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    color: var(--ink-soft);
-    padding-top: 4px;
+  .entry.is-hidden { display: none; }
+
+  .entry-head {
+    display: grid;
+    grid-template-columns: 56px 1fr 22px;
+    gap: 20px;
+    align-items: start;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 0;
+    font: inherit;
+    color: inherit;
   }
 
-  .entry-body { min-width: 0; }
+  .entry-num-col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .entry-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 1px solid var(--rule-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .entry-icon svg {
+    width: 18px;
+    height: 18px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .entry-icon.iasb { color: var(--accent-iasb); border-color: var(--accent-iasb); }
+  .entry-icon.fasb { color: var(--accent-fasb); border-color: var(--accent-fasb); }
+  .entry-icon.aicpa { color: var(--accent-aicpa); border-color: var(--accent-aicpa); }
+
+  .entry-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    padding-left: 2px;
+  }
+
+  .entry-head-main { min-width: 0; }
 
   .entry-meta {
     display: flex;
@@ -173,9 +300,7 @@
   .body-tag.fasb { color: var(--accent-fasb); }
   .body-tag.aicpa { color: var(--accent-aicpa); }
 
-  .entry-date {
-    color: var(--ink-soft);
-  }
+  .entry-date { color: var(--ink-soft); }
 
   .status {
     margin-left: auto;
@@ -187,9 +312,58 @@
   h2.entry-title {
     font-size: 20px;
     font-weight: 600;
-    margin: 0 0 10px;
+    margin: 0;
     line-height: 1.3;
   }
+
+  .chevron {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-soft);
+    padding-top: 4px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+
+  .entry-head[aria-expanded="true"] .chevron { transform: rotate(180deg); }
+
+  .entry-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    grid-template-columns: 56px 1fr 22px;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .entry-panel.is-open { grid-template-rows: 1fr; }
+
+  .entry-panel-inner {
+    overflow: hidden;
+    grid-column: 2;
+  }
+
+  .entry-panel-content { padding-top: 16px; }
+
+  .entry-banner {
+    width: 100%;
+    border: 1px solid var(--rule);
+    background: var(--paper-raised);
+    border-radius: 4px;
+    margin-bottom: 18px;
+    overflow: hidden;
+  }
+
+  .entry-banner svg { display: block; width: 100%; height: auto; }
+
+  .entry-banner.iasb { color: var(--accent-iasb); }
+  .entry-banner.fasb { color: var(--accent-fasb); }
+  .entry-banner.aicpa { color: var(--accent-aicpa); }
+
+  .entry-banner .banner-line { stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
+  .entry-banner .banner-line-soft { stroke: var(--ink-soft); fill: none; stroke-width: 1; stroke-linecap: round; stroke-dasharray: 4 4; }
+  .entry-banner .banner-fill { fill: currentColor; opacity: 0.12; stroke: none; }
 
   .entry p {
     margin: 0 0 12px;
@@ -212,15 +386,20 @@
     color: var(--ink);
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    text-transform: none;
     display: block;
     margin-bottom: 4px;
     letter-spacing: 0.01em;
   }
 
+  .entry-footer-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
   .source {
-    display: inline-block;
-    margin-top: 12px;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
     color: var(--ink-soft);
@@ -229,6 +408,43 @@
   }
 
   .source:hover { color: var(--ink); border-color: var(--ink); }
+
+  .copy-link {
+    background: none;
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    padding: 0;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--rule-strong);
+    position: relative;
+  }
+
+  .copy-link:hover { color: var(--ink); border-color: var(--ink); }
+
+  .copy-link[data-copied="true"]::after {
+    content: "Copied";
+    position: absolute;
+    left: 0;
+    top: -22px;
+    background: var(--ink);
+    color: var(--paper);
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .empty-state {
+    padding: 40px 0;
+    color: var(--ink-soft);
+    font-style: italic;
+    display: none;
+  }
+
+  .empty-state.is-visible { display: block; }
 
   footer {
     margin-top: 56px;
@@ -264,21 +480,46 @@
     opacity: 0.85;
   }
 
+  .entry-head:focus-visible,
+  .chip:focus-visible,
+  .toggle-all:focus-visible,
+  .copy-link:focus-visible,
+  .source:focus-visible {
+    outline: 2px solid var(--accent-iasb);
+    outline-offset: 3px;
+  }
+
   @media (max-width: 520px) {
-    .entry { grid-template-columns: 32px 1fr; gap: 12px; }
+    .entry-head { grid-template-columns: 38px 1fr 20px; gap: 12px; }
+    .entry-panel { grid-template-columns: 38px 1fr 20px; }
+    .entry-icon { width: 28px; height: 28px; }
+    .entry-icon svg { width: 15px; height: 15px; }
     .wrap { padding: 36px 18px 90px; }
     .status { margin-left: 0; width: 100%; }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    * { scroll-behavior: auto !important; }
+    html { scroll-behavior: auto; }
+    .chevron, .entry-panel, #progress { transition: none !important; }
   }
 </style>
 </head>
 <body>
+<div id="progress"></div>
 <div class="wrap">
 
   <header class="masthead">
+    <div class="hero-mark" aria-hidden="true">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="14" width="64" height="76" rx="3"></rect>
+        <line x1="18" y1="30" x2="82" y2="30"></line>
+        <line x1="30" y1="42" x2="60" y2="42"></line>
+        <line x1="30" y1="52" x2="60" y2="52"></line>
+        <line x1="30" y1="62" x2="60" y2="62"></line>
+        <circle cx="70" cy="72" r="14"></circle>
+        <path d="M 64 72 L 68 76 L 77 67"></path>
+      </svg>
+    </div>
     <div class="masthead-top">
       <span>DIGITAL ASSET FINANCIAL REPORTING</span>
       <span id="last-updated">UPDATED 15 SEP 2026</span>
@@ -286,86 +527,221 @@
     <h1 class="title">Its Just Crypto</h1>
     <p class="subtitle">A running record of what IASB, FASB and AICPA are actually doing about crypto and digital asset accounting — kept by an ACA trainee auditing crypto and digital asset funds.</p>
     <p class="intro">Standard-setters move slowly and in fragments — a meeting paper here, a practice aid update there. This page collects the developments that matter for anyone accounting for or auditing digital assets, in plain terms, as they happen. No hot takes, no price talk — just what changed, who changed it, and why it's relevant to the work.</p>
-    <div class="legend">
-      <span class="legend-item"><span class="dot iasb"></span>IASB — international standards</span>
-      <span class="legend-item"><span class="dot fasb"></span>FASB — US GAAP</span>
-      <span class="legend-item"><span class="dot aicpa"></span>AICPA — US audit &amp; practice guidance</span>
+    <div class="filters" id="filters" role="group" aria-label="Filter by standard-setter">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" type="button" data-filter="iasb" aria-pressed="false"><span class="dot iasb"></span>IASB</button>
+      <button class="chip" type="button" data-filter="fasb" aria-pressed="false"><span class="dot fasb"></span>FASB</button>
+      <button class="chip" type="button" data-filter="aicpa" aria-pressed="false"><span class="dot aicpa"></span>AICPA</button>
     </div>
   </header>
 
-  <section class="log">
+  <div class="log-controls">
+    <span id="entry-count">4 developments logged</span>
+    <button class="toggle-all" id="toggleAll" type="button">Expand all</button>
+  </div>
 
-    <article class="entry">
-      <div class="entry-num">01</div>
-      <div class="entry-body">
-        <div class="entry-meta">
-          <span class="body-tag aicpa">AICPA</span>
-          <span class="entry-date">25 AUG 2026</span>
-          <span class="status">practice aid updated</span>
+  <section class="log" id="log">
+
+    <article class="entry" data-body="aicpa" id="entry-01">
+      <button class="entry-head" aria-expanded="false" aria-controls="panel-01">
+        <span class="entry-num-col">
+          <span class="entry-icon aicpa" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="5" x2="12" y2="9"></line><line x1="8" y1="15" x2="16" y2="15"></line></svg>
+          </span>
+          <span class="entry-num">01</span>
+        </span>
+        <span class="entry-head-main">
+          <span class="entry-meta">
+            <span class="body-tag aicpa">AICPA</span>
+            <span class="entry-date">25 AUG 2026</span>
+            <span class="status">practice aid updated</span>
+          </span>
+          <h2 class="entry-title">Digital Assets practice aid gets a dedicated stablecoin chapter</h2>
+        </span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="entry-panel" id="panel-01">
+        <div class="entry-panel-inner">
+          <div class="entry-panel-content">
+            <div class="entry-banner aicpa" aria-hidden="true">
+              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
+                <circle class="banner-fill" cx="60" cy="45" r="30"></circle>
+                <circle class="banner-line" cx="60" cy="45" r="30"></circle>
+                <line class="banner-line" x1="60" y1="30" x2="60" y2="60"></line>
+                <path class="banner-line" d="M50 38 h20"></path>
+                <path class="banner-line" d="M50 52 h20"></path>
+                <line class="banner-line-soft" x1="94" y1="45" x2="196" y2="45"></line>
+                <circle class="banner-line" cx="130" cy="45" r="3"></circle>
+                <circle class="banner-line" cx="162" cy="45" r="3"></circle>
+                <rect class="banner-fill" x="210" y="18" width="70" height="54" rx="4"></rect>
+                <rect class="banner-line" x="210" y="18" width="70" height="54" rx="4"></rect>
+                <line class="banner-line" x1="222" y1="32" x2="268" y2="32"></line>
+                <line class="banner-line" x1="222" y1="42" x2="268" y2="42"></line>
+                <line class="banner-line" x1="222" y1="52" x2="252" y2="52"></line>
+              </svg>
+            </div>
+            <p>The AICPA refreshed <em>Accounting for and Auditing of Digital Assets</em> with a new chapter specifically on stablecoin issuers — covering how to recognise the obligations tied to issued tokens and how to account for the reserve assets backing them. A second addition sets out auditing considerations for mining revenue arrangements, and the aid was rolled forward to reflect recently effective auditing standards.</p>
+            <div class="why">
+              <strong>WHY IT MATTERS</strong>
+              If any of your engagements touch stablecoin issuance or reserve-backed tokens, this is the first place to check for non-authoritative guidance before you have to reason from first principles. Mining revenue recognition has been a grey area for a while — this narrows it.
+            </div>
+            <div class="entry-footer-row">
+              <a class="source" href="https://www.aicpa-cima.com/news/article/aicpa-provides-new-guidance-on-stablecoins-mining-revenue-and-current-auditing-standards" target="_blank" rel="noopener">AICPA &amp; CIMA announcement</a>
+              <button class="copy-link" type="button" data-entry="entry-01">Copy link</button>
+            </div>
+          </div>
         </div>
-        <h2 class="entry-title">Digital Assets practice aid gets a dedicated stablecoin chapter</h2>
-        <p>The AICPA refreshed <em>Accounting for and Auditing of Digital Assets</em> with a new chapter specifically on stablecoin issuers — covering how to recognise the obligations tied to issued tokens and how to account for the reserve assets backing them. A second addition sets out auditing considerations for mining revenue arrangements, and the aid was rolled forward to reflect recently effective auditing standards.</p>
-        <div class="why">
-          <strong>WHY IT MATTERS</strong>
-          If any of your engagements touch stablecoin issuance or reserve-backed tokens, this is the first place to check for non-authoritative guidance before you have to reason from first principles. Mining revenue recognition has been a grey area for a while — this narrows it.
-        </div>
-        <a class="source" href="https://www.aicpa-cima.com/news/article/aicpa-provides-new-guidance-on-stablecoins-mining-revenue-and-current-auditing-standards" target="_blank" rel="noopener">AICPA & CIMA announcement</a>
       </div>
     </article>
 
-    <article class="entry">
-      <div class="entry-num">02</div>
-      <div class="entry-body">
-        <div class="entry-meta">
-          <span class="body-tag fasb">FASB</span>
-          <span class="entry-date">APR–JUN 2026</span>
-          <span class="status">deliberations underway</span>
+    <article class="entry" data-body="fasb" id="entry-02">
+      <button class="entry-head" aria-expanded="false" aria-controls="panel-02">
+        <span class="entry-num-col">
+          <span class="entry-icon fasb" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M3 8h13"></path><path d="M13 4l4 4-4 4"></path><path d="M21 16H8"></path><path d="M11 20l-4-4 4-4"></path></svg>
+          </span>
+          <span class="entry-num">02</span>
+        </span>
+        <span class="entry-head-main">
+          <span class="entry-meta">
+            <span class="body-tag fasb">FASB</span>
+            <span class="entry-date">APR&ndash;JUN 2026</span>
+            <span class="status">deliberations underway</span>
+          </span>
+          <h2 class="entry-title">FASB moves on crypto transfers and stablecoin classification</h2>
+        </span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="entry-panel" id="panel-02">
+        <div class="entry-panel-inner">
+          <div class="entry-panel-content">
+            <div class="entry-banner fasb" aria-hidden="true">
+              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
+                <rect class="banner-fill" x="20" y="24" width="64" height="42" rx="4"></rect>
+                <rect class="banner-line" x="20" y="24" width="64" height="42" rx="4"></rect>
+                <line class="banner-line" x1="30" y1="38" x2="74" y2="38"></line>
+                <line class="banner-line" x1="30" y1="48" x2="60" y2="48"></line>
+                <rect class="banner-fill" x="236" y="24" width="64" height="42" rx="4"></rect>
+                <rect class="banner-line" x="236" y="24" width="64" height="42" rx="4"></rect>
+                <line class="banner-line" x1="246" y1="38" x2="290" y2="38"></line>
+                <line class="banner-line" x1="246" y1="48" x2="276" y2="48"></line>
+                <path class="banner-line" d="M96 34 H210"></path>
+                <path class="banner-line" d="M198 24 L212 34 L198 44"></path>
+                <path class="banner-line" d="M224 56 H110"></path>
+                <path class="banner-line" d="M122 46 L108 56 L122 66"></path>
+              </svg>
+            </div>
+            <p>At an IASB&ndash;FASB joint education session in June, the FASB gave an update on two parallel projects. The first would expand the scope of Subtopic 350-60 to address transfers of crypto assets, including wrapped and receipt tokens, and clarify when derecognition is appropriate. The second &mdash; on which the FASB completed initial deliberations in April and authorised staff to draft a proposed Accounting Standards Update &mdash; asks whether certain digital assets, principally stablecoins, can qualify as cash equivalents.</p>
+            <div class="why">
+              <strong>WHY IT MATTERS</strong>
+              A "cash equivalent" classification for stablecoins would be a significant shift from today's intangible-asset treatment under ASU 2023-08 — worth watching closely if any client balance sheets carry meaningful stablecoin positions.
+            </div>
+            <div class="entry-footer-row">
+              <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/iasb-fasb-joint-education-june/crypto" target="_blank" rel="noopener">IAS Plus meeting summary</a>
+              <button class="copy-link" type="button" data-entry="entry-02">Copy link</button>
+            </div>
+          </div>
         </div>
-        <h2 class="entry-title">FASB moves on crypto transfers and stablecoin classification</h2>
-        <p>At an IASB–FASB joint education session in June, the FASB gave an update on two parallel projects. The first would expand the scope of Subtopic 350-60 to address transfers of crypto assets, including wrapped and receipt tokens, and clarify when derecognition is appropriate. The second — on which the FASB completed initial deliberations in April and authorised staff to draft a proposed Accounting Standards Update — asks whether certain digital assets, principally stablecoins, can qualify as cash equivalents.</p>
-        <div class="why">
-          <strong>WHY IT MATTERS</strong>
-          A "cash equivalent" classification for stablecoins would be a significant shift from today's intangible-asset treatment under ASU 2023-08 — worth watching closely if any client balance sheets carry meaningful stablecoin positions.
-        </div>
-        <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/iasb-fasb-joint-education-june/crypto" target="_blank" rel="noopener">IAS Plus meeting summary</a>
       </div>
     </article>
 
-    <article class="entry">
-      <div class="entry-num">03</div>
-      <div class="entry-body">
-        <div class="entry-meta">
-          <span class="body-tag iasb">IASB</span>
-          <span class="entry-date">H2 2026 (PLANNED)</span>
-          <span class="status">research stage</span>
+    <article class="entry" data-body="iasb" id="entry-03">
+      <button class="entry-head" aria-expanded="false" aria-controls="panel-03">
+        <span class="entry-num-col">
+          <span class="entry-icon iasb" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><line x1="14.5" y1="14.5" x2="20" y2="20"></line></svg>
+          </span>
+          <span class="entry-num">03</span>
+        </span>
+        <span class="entry-head-main">
+          <span class="entry-meta">
+            <span class="body-tag iasb">IASB</span>
+            <span class="entry-date">H2 2026 (PLANNED)</span>
+            <span class="status">research stage</span>
+          </span>
+          <h2 class="entry-title">IASB adds crypto to its IAS 38 work plan</h2>
+        </span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="entry-panel" id="panel-03">
+        <div class="entry-panel-inner">
+          <div class="entry-panel-content">
+            <div class="entry-banner iasb" aria-hidden="true">
+              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
+                <circle class="banner-fill" cx="130" cy="45" r="34"></circle>
+                <circle class="banner-line" cx="130" cy="45" r="34"></circle>
+                <ellipse class="banner-line" cx="130" cy="45" rx="14" ry="34"></ellipse>
+                <line class="banner-line" x1="96" y1="45" x2="164" y2="45"></line>
+                <path class="banner-line" d="M101 28 Q130 40 159 28"></path>
+                <path class="banner-line" d="M101 62 Q130 50 159 62"></path>
+                <circle class="banner-line" cx="188" cy="60" r="17"></circle>
+                <line class="banner-line" x1="200" y1="72" x2="216" y2="88"></line>
+              </svg>
+            </div>
+            <p>The IASB confirmed that its planned review of IAS 38 (Intangible Assets), scheduled for the second half of the year, will include research into digital assets — including whether some tokens should sit outside the intangible-asset box entirely, and whether certain stablecoins function more like cash equivalents. Board members have flagged that establishing how widespread the issue actually is will shape how much of the IASB's limited resources go toward it.</p>
+            <div class="why">
+              <strong>WHY IT MATTERS</strong>
+              This is still research stage, not a live standard — but it's the clearest signal yet that IFRS reporters may eventually get a purpose-built answer instead of stretching IAS 38 and IAS 2 to fit digital assets.
+            </div>
+            <div class="entry-footer-row">
+              <a class="source" href="https://www.cryptopolitan.com/iasb-to-focus-on-crypto-in-2026/" target="_blank" rel="noopener">Cryptopolitan coverage</a>
+              <button class="copy-link" type="button" data-entry="entry-03">Copy link</button>
+            </div>
+          </div>
         </div>
-        <h2 class="entry-title">IASB adds crypto to its IAS 38 work plan</h2>
-        <p>The IASB confirmed that its planned review of IAS 38 (Intangible Assets), scheduled for the second half of the year, will include research into digital assets — including whether some tokens should sit outside the intangible-asset box entirely, and whether certain stablecoins function more like cash equivalents. Board members have flagged that establishing how widespread the issue actually is will shape how much of the IASB's limited resources go toward it.</p>
-        <div class="why">
-          <strong>WHY IT MATTERS</strong>
-          This is still research stage, not a live standard — but it's the clearest signal yet that IFRS reporters may eventually get a purpose-built answer instead of stretching IAS 38 and IAS 2 to fit digital assets.
-        </div>
-        <a class="source" href="https://www.cryptopolitan.com/iasb-to-focus-on-crypto-in-2026/" target="_blank" rel="noopener">Cryptopolitan coverage</a>
       </div>
     </article>
 
-    <article class="entry">
-      <div class="entry-num">04</div>
-      <div class="entry-body">
-        <div class="entry-meta">
-          <span class="body-tag fasb">FASB</span>
-          <span class="entry-date">EFFECTIVE FY 2025+</span>
-          <span class="status">in force</span>
+    <article class="entry" data-body="fasb" id="entry-04">
+      <button class="entry-head" aria-expanded="false" aria-controls="panel-04">
+        <span class="entry-num-col">
+          <span class="entry-icon fasb" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><line x1="4" y1="18" x2="20" y2="18"></line><line x1="7" y1="18" x2="7" y2="10"></line><line x1="12" y1="18" x2="12" y2="10"></line><line x1="17" y1="18" x2="17" y2="10"></line><line x1="5" y1="10" x2="19" y2="10"></line></svg>
+          </span>
+          <span class="entry-num">04</span>
+        </span>
+        <span class="entry-head-main">
+          <span class="entry-meta">
+            <span class="body-tag fasb">FASB</span>
+            <span class="entry-date">EFFECTIVE FY 2025+</span>
+            <span class="status">in force</span>
+          </span>
+          <h2 class="entry-title">The baseline: ASU 2023-08 is the standard everything else builds on</h2>
+        </span>
+        <span class="chevron" aria-hidden="true">&#9662;</span>
+      </button>
+      <div class="entry-panel" id="panel-04">
+        <div class="entry-panel-inner">
+          <div class="entry-panel-content">
+            <div class="entry-banner fasb" aria-hidden="true">
+              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
+                <rect class="banner-fill" x="40" y="60" width="240" height="14" rx="2"></rect>
+                <rect class="banner-line" x="40" y="60" width="240" height="14" rx="2"></rect>
+                <rect class="banner-fill" x="70" y="40" width="80" height="18" rx="2"></rect>
+                <rect class="banner-line" x="70" y="40" width="80" height="18" rx="2"></rect>
+                <rect class="banner-fill" x="180" y="40" width="70" height="18" rx="2"></rect>
+                <rect class="banner-line" x="180" y="40" width="70" height="18" rx="2"></rect>
+                <rect class="banner-line-soft" x="90" y="18" width="46" height="18" rx="2"></rect>
+                <rect class="banner-line-soft" x="196" y="18" width="46" height="18" rx="2"></rect>
+                <path class="banner-line" d="M113 40 V36"></path>
+                <path class="banner-line" d="M219 40 V36"></path>
+              </svg>
+            </div>
+            <p>Since becoming effective for fiscal years beginning after 15 December 2024, ASU 2023-08 has required in-scope crypto intangible assets to be measured at fair value each reporting period, with changes run through net income — a major departure from the old cost-less-impairment model. Every project listed above is effectively an extension or refinement of the gap this standard left open (stablecoins, wrapped tokens, transfers) rather than a replacement for it.</p>
+            <div class="why">
+              <strong>WHY IT MATTERS</strong>
+              Worth keeping as the reference point: when a new proposal comes out, the first useful question is always "what does this change relative to 350-60."
+            </div>
+            <div class="entry-footer-row">
+              <a class="source" href="https://rsmus.com/insights/financial-reporting/aicpa-updates-practice-aid-relating-to-digital-assets.html" target="_blank" rel="noopener">RSM summary of ASU 2023-08 scope</a>
+              <button class="copy-link" type="button" data-entry="entry-04">Copy link</button>
+            </div>
+          </div>
         </div>
-        <h2 class="entry-title">The baseline: ASU 2023-08 is the standard everything else builds on</h2>
-        <p>Since becoming effective for fiscal years beginning after 15 December 2024, ASU 2023-08 has required in-scope crypto intangible assets to be measured at fair value each reporting period, with changes run through net income — a major departure from the old cost-less-impairment model. Every project listed above is effectively an extension or refinement of the gap this standard left open (stablecoins, wrapped tokens, transfers) rather than a replacement for it.</p>
-        <div class="why">
-          <strong>WHY IT MATTERS</strong>
-          Worth keeping as the reference point: when a new proposal comes out, the first useful question is always "what does this change relative to 350-60."
-        </div>
-        <a class="source" href="https://rsmus.com/insights/financial-reporting/aicpa-updates-practice-aid-relating-to-digital-assets.html" target="_blank" rel="noopener">RSM summary of ASU 2023-08 scope</a>
       </div>
     </article>
+
+    <p class="empty-state" id="emptyState">No developments logged yet for this standard-setter.</p>
 
   </section>
 
@@ -380,5 +756,110 @@
   </footer>
 
 </div>
+
+<script>
+(function () {
+  var entries = Array.prototype.slice.call(document.querySelectorAll('.entry'));
+  var heads = Array.prototype.slice.call(document.querySelectorAll('.entry-head'));
+  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
+  var toggleAllBtn = document.getElementById('toggleAll');
+  var emptyState = document.getElementById('emptyState');
+  var entryCount = document.getElementById('entry-count');
+  var progress = document.getElementById('progress');
+  var activeFilter = 'all';
+
+  function setPanelOpen(head, open) {
+    var panel = document.getElementById(head.getAttribute('aria-controls'));
+    head.setAttribute('aria-expanded', open ? 'true' : 'false');
+    panel.classList.toggle('is-open', open);
+  }
+
+  heads.forEach(function (head) {
+    head.addEventListener('click', function () {
+      var isOpen = head.getAttribute('aria-expanded') === 'true';
+      setPanelOpen(head, !isOpen);
+      updateToggleLabel();
+    });
+  });
+
+  function updateToggleLabel() {
+    var visibleHeads = heads.filter(function (h) {
+      return !h.closest('.entry').classList.contains('is-hidden');
+    });
+    var anyClosed = visibleHeads.some(function (h) { return h.getAttribute('aria-expanded') !== 'true'; });
+    toggleAllBtn.textContent = anyClosed ? 'Expand all' : 'Collapse all';
+  }
+
+  toggleAllBtn.addEventListener('click', function () {
+    var shouldExpand = toggleAllBtn.textContent === 'Expand all';
+    heads.forEach(function (head) {
+      if (!head.closest('.entry').classList.contains('is-hidden')) {
+        setPanelOpen(head, shouldExpand);
+      }
+    });
+    toggleAllBtn.textContent = shouldExpand ? 'Collapse all' : 'Expand all';
+  });
+
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      activeFilter = chip.getAttribute('data-filter');
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
+      applyFilter();
+    });
+  });
+
+  function applyFilter() {
+    var visibleCount = 0;
+    entries.forEach(function (entry) {
+      var match = activeFilter === 'all' || entry.getAttribute('data-body') === activeFilter;
+      entry.classList.toggle('is-hidden', !match);
+      if (match) visibleCount++;
+    });
+    emptyState.classList.toggle('is-visible', visibleCount === 0);
+    entryCount.textContent = visibleCount + (visibleCount === 1 ? ' development logged' : ' developments logged');
+    updateToggleLabel();
+  }
+
+  document.querySelectorAll('.copy-link').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var id = btn.getAttribute('data-entry');
+      var url = window.location.origin + window.location.pathname + '#' + id;
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).catch(function () {});
+      }
+      btn.setAttribute('data-copied', 'true');
+      setTimeout(function () { btn.removeAttribute('data-copied'); }, 1500);
+    });
+  });
+
+  function openFromHash() {
+    if (window.location.hash) {
+      var id = window.location.hash.substring(1);
+      var target = document.getElementById(id);
+      if (target && target.classList.contains('entry')) {
+        var head = target.querySelector('.entry-head');
+        setPanelOpen(head, true);
+        setTimeout(function () { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+      }
+    }
+  }
+
+  function updateProgress() {
+    var scrollTop = window.scrollY;
+    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progress.style.width = pct + '%';
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+
+  updateProgress();
+  updateToggleLabel();
+  openFromHash();
+})();
+</script>
+
 </body>
 </html>
