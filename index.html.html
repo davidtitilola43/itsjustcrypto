@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Its Just Crypto — Crypto Accounting Standards Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #E9EBE2;
+    --paper-raised: #F2F3EC;
+    --ink: #1F2B24;
+    --ink-soft: #4B5A4F;
+    --rule: #C7CBB8;
+    --rule-strong: #9AA189;
+    --accent-iasb: #1F6F5C;
+    --accent-fasb: #8A4B2B;
+    --accent-aicpa: #3A5A8C;
+    --accent-neutral: #5C6654;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --paper: #141813;
+      --paper-raised: #1B211A;
+      --ink: #E7E9E0;
+      --ink-soft: #A9B29E;
+      --rule: #333B2E;
+      --rule-strong: #4A5540;
+      --accent-iasb: #4FA98F;
+      --accent-fasb: #C08355;
+      --accent-aicpa: #7C9AC9;
+      --accent-neutral: #9AA189;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #141813;
+    --paper-raised: #1B211A;
+    --ink: #E7E9E0;
+    --ink-soft: #A9B29E;
+    --rule: #333B2E;
+    --rule-strong: #4A5540;
+    --accent-iasb: #4FA98F;
+    --accent-fasb: #C08355;
+    --accent-aicpa: #7C9AC9;
+    --accent-neutral: #9AA189;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 56px 24px 120px;
+  }
+
+  header.masthead {
+    border-bottom: 3px double var(--rule-strong);
+    padding-bottom: 28px;
+    margin-bottom: 40px;
+  }
+
+  .masthead-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.02em;
+    margin-bottom: 18px;
+  }
+
+  h1.title {
+    font-size: clamp(34px, 6vw, 48px);
+    font-weight: 700;
+    margin: 0 0 10px;
+    letter-spacing: -0.01em;
+    line-height: 1.05;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: var(--ink-soft);
+    max-width: 54ch;
+    margin: 0;
+  }
+
+  .intro {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 28px 0 0;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 26px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--ink-soft);
+  }
+
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dot.iasb { background: var(--accent-iasb); }
+  .dot.fasb { background: var(--accent-fasb); }
+  .dot.aicpa { background: var(--accent-aicpa); }
+
+  section.log { margin-top: 8px; }
+
+  .entry {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    padding: 30px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .entry:first-of-type { padding-top: 0; }
+
+  .entry-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-soft);
+    padding-top: 4px;
+  }
+
+  .entry-body { min-width: 0; }
+
+  .entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .body-tag {
+    font-weight: 600;
+    padding: 2px 0;
+    border-bottom: 2px solid currentColor;
+  }
+
+  .body-tag.iasb { color: var(--accent-iasb); }
+  .body-tag.fasb { color: var(--accent-fasb); }
+  .body-tag.aicpa { color: var(--accent-aicpa); }
+
+  .entry-date {
+    color: var(--ink-soft);
+  }
+
+  .status {
+    margin-left: auto;
+    color: var(--ink-soft);
+    font-style: italic;
+    font-family: 'Source Serif 4', serif;
+  }
+
+  h2.entry-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 10px;
+    line-height: 1.3;
+  }
+
+  .entry p {
+    margin: 0 0 12px;
+    font-size: 15.5px;
+    color: var(--ink);
+  }
+
+  .entry p:last-child { margin-bottom: 0; }
+
+  .why {
+    background: var(--paper-raised);
+    border-left: 3px solid var(--rule-strong);
+    padding: 12px 16px;
+    margin-top: 14px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+
+  .why strong {
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    text-transform: none;
+    display: block;
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+
+  .source {
+    display: inline-block;
+    margin-top: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .source:hover { color: var(--ink); border-color: var(--ink); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 28px;
+    border-top: 3px double var(--rule-strong);
+    font-size: 14px;
+    color: var(--ink-soft);
+  }
+
+  footer p { margin: 0 0 14px; max-width: 62ch; }
+
+  .footer-links {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    margin-top: 18px;
+  }
+
+  .footer-links a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--rule-strong);
+  }
+
+  .footer-links a:hover { border-color: var(--ink); }
+
+  .disclaimer {
+    margin-top: 28px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    opacity: 0.85;
+  }
+
+  @media (max-width: 520px) {
+    .entry { grid-template-columns: 32px 1fr; gap: 12px; }
+    .wrap { padding: 36px 18px 90px; }
+    .status { margin-left: 0; width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="masthead-top">
+      <span>DIGITAL ASSET FINANCIAL REPORTING</span>
+      <span id="last-updated">UPDATED 15 SEP 2026</span>
+    </div>
+    <h1 class="title">Its Just Crypto</h1>
+    <p class="subtitle">A running record of what IASB, FASB and AICPA are actually doing about crypto and digital asset accounting — kept by an ACA trainee auditing crypto and digital asset funds.</p>
+    <p class="intro">Standard-setters move slowly and in fragments — a meeting paper here, a practice aid update there. This page collects the developments that matter for anyone accounting for or auditing digital assets, in plain terms, as they happen. No hot takes, no price talk — just what changed, who changed it, and why it's relevant to the work.</p>
+    <div class="legend">
+      <span class="legend-item"><span class="dot iasb"></span>IASB — international standards</span>
+      <span class="legend-item"><span class="dot fasb"></span>FASB — US GAAP</span>
+      <span class="legend-item"><span class="dot aicpa"></span>AICPA — US audit &amp; practice guidance</span>
+    </div>
+  </header>
+
+  <section class="log">
+
+    <article class="entry">
+      <div class="entry-num">01</div>
+      <div class="entry-body">
+        <div class="entry-meta">
+          <span class="body-tag aicpa">AICPA</span>
+          <span class="entry-date">25 AUG 2026</span>
+          <span class="status">practice aid updated</span>
+        </div>
+        <h2 class="entry-title">Digital Assets practice aid gets a dedicated stablecoin chapter</h2>
+        <p>The AICPA refreshed <em>Accounting for and Auditing of Digital Assets</em> with a new chapter specifically on stablecoin issuers — covering how to recognise the obligations tied to issued tokens and how to account for the reserve assets backing them. A second addition sets out auditing considerations for mining revenue arrangements, and the aid was rolled forward to reflect recently effective auditing standards.</p>
+        <div class="why">
+          <strong>WHY IT MATTERS</strong>
+          If any of your engagements touch stablecoin issuance or reserve-backed tokens, this is the first place to check for non-authoritative guidance before you have to reason from first principles. Mining revenue recognition has been a grey area for a while — this narrows it.
+        </div>
+        <a class="source" href="https://www.aicpa-cima.com/news/article/aicpa-provides-new-guidance-on-stablecoins-mining-revenue-and-current-auditing-standards" target="_blank" rel="noopener">AICPA & CIMA announcement</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-num">02</div>
+      <div class="entry-body">
+        <div class="entry-meta">
+          <span class="body-tag fasb">FASB</span>
+          <span class="entry-date">APR–JUN 2026</span>
+          <span class="status">deliberations underway</span>
+        </div>
+        <h2 class="entry-title">FASB moves on crypto transfers and stablecoin classification</h2>
+        <p>At an IASB–FASB joint education session in June, the FASB gave an update on two parallel projects. The first would expand the scope of Subtopic 350-60 to address transfers of crypto assets, including wrapped and receipt tokens, and clarify when derecognition is appropriate. The second — on which the FASB completed initial deliberations in April and authorised staff to draft a proposed Accounting Standards Update — asks whether certain digital assets, principally stablecoins, can qualify as cash equivalents.</p>
+        <div class="why">
+          <strong>WHY IT MATTERS</strong>
+          A "cash equivalent" classification for stablecoins would be a significant shift from today's intangible-asset treatment under ASU 2023-08 — worth watching closely if any client balance sheets carry meaningful stablecoin positions.
+        </div>
+        <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/iasb-fasb-joint-education-june/crypto" target="_blank" rel="noopener">IAS Plus meeting summary</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-num">03</div>
+      <div class="entry-body">
+        <div class="entry-meta">
+          <span class="body-tag iasb">IASB</span>
+          <span class="entry-date">H2 2026 (PLANNED)</span>
+          <span class="status">research stage</span>
+        </div>
+        <h2 class="entry-title">IASB adds crypto to its IAS 38 work plan</h2>
+        <p>The IASB confirmed that its planned review of IAS 38 (Intangible Assets), scheduled for the second half of the year, will include research into digital assets — including whether some tokens should sit outside the intangible-asset box entirely, and whether certain stablecoins function more like cash equivalents. Board members have flagged that establishing how widespread the issue actually is will shape how much of the IASB's limited resources go toward it.</p>
+        <div class="why">
+          <strong>WHY IT MATTERS</strong>
+          This is still research stage, not a live standard — but it's the clearest signal yet that IFRS reporters may eventually get a purpose-built answer instead of stretching IAS 38 and IAS 2 to fit digital assets.
+        </div>
+        <a class="source" href="https://www.cryptopolitan.com/iasb-to-focus-on-crypto-in-2026/" target="_blank" rel="noopener">Cryptopolitan coverage</a>
+      </div>
+    </article>
+
+    <article class="entry">
+      <div class="entry-num">04</div>
+      <div class="entry-body">
+        <div class="entry-meta">
+          <span class="body-tag fasb">FASB</span>
+          <span class="entry-date">EFFECTIVE FY 2025+</span>
+          <span class="status">in force</span>
+        </div>
+        <h2 class="entry-title">The baseline: ASU 2023-08 is the standard everything else builds on</h2>
+        <p>Since becoming effective for fiscal years beginning after 15 December 2024, ASU 2023-08 has required in-scope crypto intangible assets to be measured at fair value each reporting period, with changes run through net income — a major departure from the old cost-less-impairment model. Every project listed above is effectively an extension or refinement of the gap this standard left open (stablecoins, wrapped tokens, transfers) rather than a replacement for it.</p>
+        <div class="why">
+          <strong>WHY IT MATTERS</strong>
+          Worth keeping as the reference point: when a new proposal comes out, the first useful question is always "what does this change relative to 350-60."
+        </div>
+        <a class="source" href="https://rsmus.com/insights/financial-reporting/aicpa-updates-practice-aid-relating-to-digital-assets.html" target="_blank" rel="noopener">RSM summary of ASU 2023-08 scope</a>
+      </div>
+    </article>
+
+  </section>
+
+  <footer>
+    <p>This is a personal project, kept as a working reference rather than professional advice — always check primary sources (IASB, FASB, AICPA) before relying on anything here for client work. Entries are written and curated by hand, drawing on public standard-setter updates and reporting.</p>
+    <div class="footer-links">
+      <a href="https://www.linkedin.com/in/davidtitilola43" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://substack.com/itsjustcrypto" target="_blank" rel="noopener">Newsletter</a>
+      <a href="mailto:davidtitilola43@gmail.com">Contact</a>
+    </div>
+    <p class="disclaimer">Views are the author's own and do not represent the position of any current or former employer.</p>
+  </footer>
+
+</div>
+</body>
+</html>
