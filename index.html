@@ -2,1010 +2,732 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%92</text></svg>">
-<title>Its Just Crypto — Crypto Accounting Standards Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Its Just Crypto</title>
+<meta name="description" content="Crypto news for students, young professionals and the crypto-curious: hacks, new laws, politics and market moves, explained in plain English.">
+<meta property="og:title" content="Its Just Crypto">
+<meta property="og:description" content="Crypto news, minus the noise. Hacks, new laws, politics and the coins everyone is talking about, explained plainly.">
+<meta name="theme-color" content="#0E1116">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%23C6F432'/%3E%3Cpath d='M6 8h12M6 12h8M6 16h12' stroke='%230E1116' stroke-width='2.4' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --paper: #E9EBE2;
-    --paper-raised: #F2F3EC;
-    --ink: #1F2B24;
-    --ink-soft: #4B5A4F;
-    --rule: #C7CBB8;
-    --rule-strong: #9AA189;
-    --accent-iasb: #1F6F5C;
-    --accent-fasb: #8A4B2B;
-    --accent-aicpa: #3A5A8C;
-    --accent-neutral: #5C6654;
+/* Layout: brand masthead, one big lead story, a "week in numbers" ledger strip,
+   a filterable story feed, then hack chart, explainer glossary, quiz and community.
+   Dark-first, built on the business card palette. */
+:root {
+  --bg: #0E1116;
+  --surface: #161B22;
+  --surface-2: #1D232C;
+  --line: #2A303A;
+  --fg: #F4F5F0;
+  --fg-soft: #A9AFB8;
+  --lime: #C6F432;          /* brand accent, used as fill */
+  --lime-text: #C6F432;     /* accent as text */
+  --on-lime: #0E1116;
+  --teal: #4FD1C5;
+  --c-hacks: #F5A524;
+  --c-politics: #8FA8FF;
+  --c-laws: #4FD1C5;
+  --c-markets: #C6F432;
+  --c-acct: #C9B8FF;
+  --hood-1: #1F252E;
+  --hood-2: #2A313B;
+  --face: #07090C;
+  --f-display: 'Space Grotesk', 'Helvetica Neue', Arial, sans-serif;
+  --f-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #F4F5F0; --surface: #FFFFFF; --surface-2: #E9EBE3; --line: #D5D8CE;
+    --fg: #0E1116; --fg-soft: #4A505A; --lime: #C6F432; --lime-text: #4A6400; --on-lime: #0E1116;
+    --teal: #0F766E; --c-hacks: #A85A00; --c-politics: #3450B8; --c-laws: #0F766E;
+    --c-markets: #4A6400; --c-acct: #6B4FC8; --hood-1: #1F252E; --hood-2: #2A313B; --face: #07090C;
+    color-scheme: light;
   }
-  :root:not([data-theme="light"]) {
-    @media (prefers-color-scheme: dark) {
-      --paper: #141813;
-      --paper-raised: #1B211A;
-      --ink: #E7E9E0;
-      --ink-soft: #A9B29E;
-      --rule: #333B2E;
-      --rule-strong: #4A5540;
-      --accent-iasb: #4FA98F;
-      --accent-fasb: #C08355;
-      --accent-aicpa: #7C9AC9;
-      --accent-neutral: #9AA189;
-    }
-  }
-  :root[data-theme="dark"] {
-    --paper: #141813;
-    --paper-raised: #1B211A;
-    --ink: #E7E9E0;
-    --ink-soft: #A9B29E;
-    --rule: #333B2E;
-    --rule-strong: #4A5540;
-    --accent-iasb: #4FA98F;
-    --accent-fasb: #C08355;
-    --accent-aicpa: #7C9AC9;
-    --accent-neutral: #9AA189;
-  }
-
-  * { box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: 'Source Serif 4', Georgia, serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
-
-  /* progress bar */
-  #progress {
-    position: fixed;
-    top: 0; left: 0;
-    height: 3px;
-    width: 0%;
-    background: var(--accent-iasb);
-    z-index: 50;
-    transition: width 0.1s linear;
-  }
-
-  .wrap {
-    max-width: 720px;
-    margin: 0 auto;
-    padding: 56px 24px 120px;
-  }
-
-  header.masthead {
-    border-bottom: 3px double var(--rule-strong);
-    padding-bottom: 28px;
-    margin-bottom: 32px;
-    position: relative;
-  }
-
-  .hero-mark {
-    position: absolute;
-    top: 4px;
-    right: 0;
-    width: 92px;
-    height: 92px;
-    color: var(--ink-soft);
-    opacity: 0.55;
-  }
-
-  .hero-mark svg {
-    width: 100%;
-    height: 100%;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  @media (max-width: 640px) {
-    .hero-mark { display: none; }
-  }
-
-  .masthead-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    letter-spacing: 0.02em;
-    margin-bottom: 18px;
-  }
-
-  h1.title {
-    font-size: clamp(34px, 6vw, 48px);
-    font-weight: 700;
-    margin: 0 0 10px;
-    letter-spacing: -0.01em;
-    line-height: 1.05;
-  }
-
-  .subtitle {
-    font-size: 17px;
-    color: var(--ink-soft);
-    max-width: 54ch;
-    margin: 0;
-  }
-
-  .intro {
-    font-size: 16px;
-    color: var(--ink-soft);
-    max-width: 62ch;
-    margin: 28px 0 0;
-  }
-
-  /* filter chips */
-  .filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 26px;
-  }
-
-  .chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 7px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    background: transparent;
-    border: 1px solid var(--rule-strong);
-    border-radius: 100px;
-    padding: 6px 13px 6px 10px;
-    cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-  }
-
-  .chip:hover { border-color: var(--ink-soft); color: var(--ink); }
-
-  .chip[aria-pressed="true"] {
-    background: var(--ink);
-    color: var(--paper);
-    border-color: var(--ink);
-  }
-
-  .chip[aria-pressed="true"] .dot { filter: brightness(1.6); }
-
-  .dot {
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .dot.iasb { background: var(--accent-iasb); }
-  .dot.fasb { background: var(--accent-fasb); }
-  .dot.aicpa { background: var(--accent-aicpa); }
-
-  .log-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 30px;
-    padding-bottom: 14px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-  }
-
-  .toggle-all {
-    background: none;
-    border: none;
-    color: var(--ink-soft);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-    padding: 0;
-  }
-
-  .toggle-all:hover { color: var(--ink); }
-
-  section.log { margin-top: 0; }
-
-  .entry {
-    border-bottom: 1px solid var(--rule);
-    padding: 26px 0;
-    transition: opacity 0.2s ease;
-  }
-
-  .entry:first-of-type { padding-top: 0; }
-
-  .entry.is-hidden { display: none; }
-
-  .entry-head {
-    display: grid;
-    grid-template-columns: 56px 1fr 22px;
-    gap: 20px;
-    align-items: start;
-    width: 100%;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    padding: 0;
-    font: inherit;
-    color: inherit;
-  }
-
-  .entry-num-col {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-  }
-
-  .entry-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    border: 1px solid var(--rule-strong);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .entry-icon svg {
-    width: 18px;
-    height: 18px;
-    stroke: currentColor;
-    fill: none;
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .entry-icon.iasb { color: var(--accent-iasb); border-color: var(--accent-iasb); }
-  .entry-icon.fasb { color: var(--accent-fasb); border-color: var(--accent-fasb); }
-  .entry-icon.aicpa { color: var(--accent-aicpa); border-color: var(--accent-aicpa); }
-
-  .entry-num {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    padding-left: 2px;
-  }
-
-  .entry-head-main { min-width: 0; }
-
-  .entry-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-  }
-
-  .body-tag {
-    font-weight: 600;
-    padding: 2px 0;
-    border-bottom: 2px solid currentColor;
-  }
-
-  .body-tag.iasb { color: var(--accent-iasb); }
-  .body-tag.fasb { color: var(--accent-fasb); }
-  .body-tag.aicpa { color: var(--accent-aicpa); }
-
-  .entry-date { color: var(--ink-soft); }
-
-  .status {
-    margin-left: auto;
-    color: var(--ink-soft);
-    font-style: italic;
-    font-family: 'Source Serif 4', serif;
-  }
-
-  h2.entry-title {
-    font-size: 20px;
-    font-weight: 600;
-    margin: 0;
-    line-height: 1.3;
-  }
-
-  .chevron {
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--ink-soft);
-    padding-top: 4px;
-    transition: transform 0.2s ease;
-    flex-shrink: 0;
-  }
-
-  .entry-head[aria-expanded="true"] .chevron { transform: rotate(180deg); }
-
-  .entry-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    grid-template-columns: 56px 1fr 22px;
-    transition: grid-template-rows 0.25s ease;
-  }
-
-  .entry-panel.is-open { grid-template-rows: 1fr; }
-
-  .entry-panel-inner {
-    overflow: hidden;
-    grid-column: 2;
-  }
-
-  .entry-panel-content { padding-top: 16px; }
-
-  .entry-banner {
-    width: 100%;
-    border: 1px solid var(--rule);
-    background: var(--paper-raised);
-    border-radius: 4px;
-    margin-bottom: 18px;
-    overflow: hidden;
-  }
-
-  .entry-banner svg { display: block; width: 100%; height: auto; }
-
-  .entry-banner.iasb { color: var(--accent-iasb); }
-  .entry-banner.fasb { color: var(--accent-fasb); }
-  .entry-banner.aicpa { color: var(--accent-aicpa); }
-
-  .entry-banner .banner-line { stroke: currentColor; fill: none; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round; }
-  .entry-banner .banner-line-soft { stroke: var(--ink-soft); fill: none; stroke-width: 1; stroke-linecap: round; stroke-dasharray: 4 4; }
-  .entry-banner .banner-fill { fill: currentColor; opacity: 0.12; stroke: none; }
-
-  .entry p {
-    margin: 0 0 12px;
-    font-size: 15.5px;
-    color: var(--ink);
-  }
-
-  .entry p:last-child { margin-bottom: 0; }
-
-  .why {
-    background: var(--paper-raised);
-    border-left: 3px solid var(--rule-strong);
-    padding: 12px 16px;
-    margin-top: 14px;
-    font-size: 14.5px;
-    color: var(--ink-soft);
-  }
-
-  .why strong {
-    color: var(--ink);
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    display: block;
-    margin-bottom: 4px;
-    letter-spacing: 0.01em;
-  }
-
-  .entry-footer-row {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 14px;
-    flex-wrap: wrap;
-  }
-
-  .source {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    text-decoration: none;
-    border-bottom: 1px solid var(--rule-strong);
-  }
-
-  .source:hover { color: var(--ink); border-color: var(--ink); }
-
-  .copy-link {
-    background: none;
-    border: none;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12px;
-    color: var(--ink-soft);
-    cursor: pointer;
-    padding: 0;
-    text-decoration: none;
-    border-bottom: 1px dashed var(--rule-strong);
-    position: relative;
-  }
-
-  .copy-link:hover { color: var(--ink); border-color: var(--ink); }
-
-  .copy-link[data-copied="true"]::after {
-    content: "Copied";
-    position: absolute;
-    left: 0;
-    top: -22px;
-    background: var(--ink);
-    color: var(--paper);
-    font-size: 10px;
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-  }
-
-  .empty-state {
-    padding: 40px 0;
-    color: var(--ink-soft);
-    font-style: italic;
-    display: none;
-  }
-
-  .empty-state.is-visible { display: block; }
-
-  footer {
-    margin-top: 56px;
-    padding-top: 28px;
-    border-top: 3px double var(--rule-strong);
-    font-size: 14px;
-    color: var(--ink-soft);
-  }
-
-  footer p { margin: 0 0 14px; max-width: 62ch; }
-
-  .footer-links {
-    display: flex;
-    gap: 20px;
-    flex-wrap: wrap;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 13px;
-    margin-top: 18px;
-  }
-
-  .footer-links a {
-    color: var(--ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--rule-strong);
-  }
-
-  .footer-links a:hover { border-color: var(--ink); }
-
-  .disclaimer {
-    margin-top: 28px;
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    opacity: 0.85;
-  }
-
-  .entry-head:focus-visible,
-  .chip:focus-visible,
-  .toggle-all:focus-visible,
-  .copy-link:focus-visible,
-  .source:focus-visible {
-    outline: 2px solid var(--accent-iasb);
-    outline-offset: 3px;
-  }
-
-  @media (max-width: 520px) {
-    .entry-head { grid-template-columns: 38px 1fr 20px; gap: 12px; }
-    .entry-panel { grid-template-columns: 38px 1fr 20px; }
-    .entry-icon { width: 28px; height: 28px; }
-    .entry-icon svg { width: 15px; height: 15px; }
-    .wrap { padding: 36px 18px 90px; }
-    .status { margin-left: 0; width: 100%; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    .chevron, .entry-panel, #progress { transition: none !important; }
-  }
+}
+:root[data-theme="light"] {
+  --bg: #F4F5F0; --surface: #FFFFFF; --surface-2: #E9EBE3; --line: #D5D8CE;
+  --fg: #0E1116; --fg-soft: #4A505A; --lime: #C6F432; --lime-text: #4A6400; --on-lime: #0E1116;
+  --teal: #0F766E; --c-hacks: #A85A00; --c-politics: #3450B8; --c-laws: #0F766E;
+  --c-markets: #4A6400; --c-acct: #6B4FC8; --hood-1: #1F252E; --hood-2: #2A313B; --face: #07090C;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+.card.full { grid-column: 1 / -1; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--bg); }
+a { color: inherit; }
+h1, h2, h3 { font-family: var(--f-display); text-wrap: balance; margin: 0; letter-spacing: -0.02em; }
+p { margin: 0; }
+.wrap {
+  max-width: 1180px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+.mono { font-family: var(--f-mono); }
+:focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; border-radius: 4px; }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner { display: flex; align-items: center; gap: 24px; padding-block: 12px; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.brand-mark { width: 34px; height: 34px; border-radius: 9px; background: var(--lime); display: grid; place-items: center; flex-shrink: 0; }
+.brand-name { font-family: var(--f-display); font-weight: 700; font-size: 19px; letter-spacing: -0.02em; }
+.brand-name b { color: var(--lime-text); }
+.nav-links { display: flex; gap: 4px; margin-left: auto; flex-wrap: wrap; }
+.nav-links a { text-decoration: none; font-size: 14px; font-weight: 500; color: var(--fg-soft); padding: 8px 12px; border-radius: 999px; }
+.nav-links a:hover { color: var(--fg); background: var(--surface-2); }
+.nav-cta { text-decoration: none; background: var(--lime); color: var(--on-lime) !important; font-weight: 600; font-size: 14px; padding: 9px 16px; border-radius: 999px; white-space: nowrap; }
+.nav-cta:hover { filter: brightness(1.05); }
+@media (max-width: 820px) { .nav-links { display: none; } .nav-cta { margin-left: auto; } }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 48px 40px; display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-soft); }
+.live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lime) 25%, transparent); }
+.hero h1 { font-size: clamp(44px, 7.4vw, 92px); line-height: 0.95; font-weight: 700; letter-spacing: -0.04em; margin-top: 18px; }
+.hero h1 span { color: var(--lime-text); }
+.hero-sub { font-size: clamp(17px, 2vw, 20px); color: var(--fg-soft); max-width: 34ch; margin-top: 20px; line-height: 1.45; }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+.hero-tags span { font-size: 13px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--fg-soft); }
+.hero-art { position: relative; justify-self: center; width: min(400px, 100%); aspect-ratio: 1; max-width: 100%; }
+.hero-art svg { width: 100%; height: 100%; display: block; }
+.hero-art .float-tag {
+  position: absolute; font-family: var(--f-mono); font-size: 12px; font-weight: 600;
+  background: var(--surface); border: 1px solid var(--line); padding: 7px 11px; border-radius: 10px; white-space: nowrap;
+  animation: bob 6s ease-in-out infinite;
+}
+.float-tag.t1 { top: 12%; left: -4%; } .float-tag.t2 { bottom: 16%; right: -6%; animation-delay: -3s; }
+.float-tag .up { color: var(--lime-text); } .float-tag .down { color: var(--c-hacks); }
+@keyframes bob { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+.blk { animation: pulse 3.2s ease-in-out infinite; transform-origin: center; transform-box: fill-box; }
+.blk.b2 { animation-delay: -1.1s; } .blk.b3 { animation-delay: -2.2s; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.55; } }
+@media (max-width: 860px) {
+  .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 32px 28px; }
+  .hero-art { width: min(280px, 80%); order: -1; justify-self: start; }
+  .float-tag.t1 { left: 60%; top: 4%; } .float-tag.t2 { right: auto; left: 62%; bottom: 10%; }
+}
+
+/* ---------- lead story ---------- */
+.lead {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 22px; overflow: hidden;
+}
+.lead-visual { background: #0B0D11; padding: 32px; display: flex; flex-direction: column; justify-content: space-between; gap: 24px; min-width: 0; color: #F4F5F0; position: relative; overflow: hidden; }
+.lead-visual::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(0deg, transparent 0 23px, rgba(255,255,255,0.035) 23px 24px); pointer-events: none; }
+.lead-amount { font-family: var(--f-display); font-weight: 700; font-size: clamp(56px, 9vw, 104px); line-height: 0.9; letter-spacing: -0.05em; color: #F5A524; }
+.lead-amount small { display: block; font-size: 15px; letter-spacing: 0.06em; text-transform: uppercase; color: #A9AFB8; font-family: var(--f-mono); font-weight: 500; margin-top: 12px; }
+.lead-compare { display: grid; gap: 10px; position: relative; z-index: 1; }
+.lead-compare .row { display: grid; grid-template-columns: 104px 1fr auto; gap: 12px; align-items: center; font-family: var(--f-mono); font-size: 12px; color: #A9AFB8; }
+.lead-compare .bar { height: 10px; border-radius: 5px; background: #2A303A; }
+.lead-compare .bar i { display: block; height: 100%; border-radius: 5px; background: #F5A524; }
+.lead-compare .row:last-child .bar i { background: #6B7280; }
+.lead-body { padding: 32px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.lead-body h2 { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.05; }
+.lead-body p { color: var(--fg-soft); }
+.lead-body p strong { color: var(--fg); font-weight: 600; }
+@media (max-width: 860px) { .lead { grid-template-columns: 1fr; } .lead-visual, .lead-body { padding: 24px; } }
+
+.tag {
+  display: inline-flex; align-items: center; gap: 7px; font-family: var(--f-mono);
+  font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--tc, var(--fg-soft));
+}
+.tag::before { content: ""; width: 8px; height: 8px; border-radius: 2px; background: currentColor; }
+.tag.hacks { --tc: var(--c-hacks); } .tag.politics { --tc: var(--c-politics); }
+.tag.laws { --tc: var(--c-laws); } .tag.markets { --tc: var(--c-markets); } .tag.acct { --tc: var(--c-acct); }
+.lead-visual .tag { --tc: #F5A524; position: relative; z-index: 1; }
+.meta { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; font-size: 13px; color: var(--fg-soft); }
+.meta .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--fg-soft); }
+
+.why {
+  background: var(--surface-2); border-radius: 14px; padding: 14px 16px; font-size: 15px; color: var(--fg);
+}
+.why b { display: block; font-family: var(--f-mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lime-text); margin-bottom: 4px; }
+.src { font-size: 13px; color: var(--fg-soft); }
+.src a { color: var(--fg-soft); text-underline-offset: 3px; }
+.src a:hover { color: var(--fg); }
+
+/* ---------- numbers strip ---------- */
+.section { padding-block: 64px 0; }
+.section-head { display: flex; align-items: end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; }
+.section-head h2 { font-size: clamp(28px, 4vw, 40px); line-height: 1; }
+.section-head p { color: var(--fg-soft); max-width: 48ch; }
+.kicker { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-soft); margin-bottom: 10px; }
+
+.numbers { display: grid; grid-template-columns: repeat(4, 1fr); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; }
+.num { padding: 22px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.num:last-child { border-right: 0; }
+.num .v { font-family: var(--f-display); font-weight: 700; font-size: clamp(30px, 3.6vw, 42px); letter-spacing: -0.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+.num .l { font-size: 14px; color: var(--fg-soft); line-height: 1.4; }
+.num:nth-child(1) .v { color: var(--c-hacks); } .num:nth-child(2) .v { color: var(--fg); }
+.num:nth-child(3) .v { color: var(--c-politics); } .num:nth-child(4) .v { color: var(--lime-text); }
+@media (max-width: 860px) {
+  .numbers { grid-template-columns: 1fr 1fr; }
+  .num:nth-child(2) { border-right: 0; }
+  .num:nth-child(-n+2) { border-bottom: 1px solid var(--line); }
+}
+
+/* ---------- feed ---------- */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+.chip {
+  font: 500 14px var(--f-body); color: var(--fg-soft); background: transparent;
+  border: 1px solid var(--line); border-radius: 999px; padding: 9px 16px; cursor: pointer; min-height: 40px;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.chip:hover { color: var(--fg); border-color: var(--fg-soft); }
+.chip[aria-pressed="true"] { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.chip i { width: 8px; height: 8px; border-radius: 2px; background: var(--dc); }
+
+.feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 18px; padding: 22px;
+  display: flex; flex-direction: column; gap: 14px; min-width: 0;
+  transition: border-color .2s ease, transform .2s ease;
+}
+.card:hover { border-color: color-mix(in srgb, var(--fg-soft) 60%, var(--line)); transform: translateY(-2px); }
+.card.wide { grid-column: span 2; }
+.card h3 { font-size: 22px; line-height: 1.15; }
+.card .dek { color: var(--fg-soft); font-size: 15.5px; }
+.card .more { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .3s ease; }
+.card .more > div { overflow: hidden; display: flex; flex-direction: column; gap: 12px; }
+.card.open .more { grid-template-rows: 1fr; }
+.card .more p { font-size: 15.5px; }
+.card-foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 4px; }
+.read-btn {
+  font: 600 14px var(--f-body); color: var(--fg); background: var(--surface-2); border: 0; border-radius: 999px;
+  padding: 10px 16px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; min-height: 44px;
+}
+.read-btn:hover { background: var(--line); }
+.read-btn svg { transition: transform .25s ease; }
+.card.open .read-btn svg { transform: rotate(180deg); }
+.card[hidden] { display: none !important; }
+.mini-stat { display: flex; gap: 18px; flex-wrap: wrap; }
+.mini-stat div { font-family: var(--f-mono); font-size: 12px; color: var(--fg-soft); }
+.mini-stat b { display: block; font-family: var(--f-display); font-size: 24px; color: var(--fg); letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.mini-stat .pos { color: var(--lime-text); }
+@media (max-width: 980px) { .feed { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 640px) { .feed { grid-template-columns: 1fr; } .card.wide { grid-column: auto; } }
+
+/* ---------- hack chart ---------- */
+.chart-box { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 28px; }
+.chart { display: grid; gap: 14px; }
+.chart-row { display: grid; grid-template-columns: 190px 1fr 92px; gap: 16px; align-items: center; }
+.chart-row .who { font-weight: 600; font-size: 15px; line-height: 1.25; }
+.chart-row .who span { display: block; font-family: var(--f-mono); font-size: 11.5px; font-weight: 500; color: var(--fg-soft); margin-top: 2px; }
+.chart-row .track { height: 22px; border-radius: 6px; background: var(--surface-2); position: relative; overflow: hidden; }
+.chart-row .track i { position: absolute; inset: 0 auto 0 0; border-radius: 6px; background: var(--c-hacks); min-width: 4px; transform-origin: left; animation: grow 1.1s cubic-bezier(.2,.7,.2,1) both; }
+.chart-row.muted .track i { background: color-mix(in srgb, var(--c-hacks) 45%, var(--surface-2)); }
+.chart-row .amt { font-family: var(--f-mono); font-weight: 600; font-size: 14px; text-align: right; font-variant-numeric: tabular-nums; }
+@keyframes grow { from { transform: scaleX(0.02); } to { transform: scaleX(1); } }
+.chart-note { margin-top: 20px; font-size: 14px; color: var(--fg-soft); }
+@media (max-width: 640px) {
+  .chart-box { padding: 20px; }
+  .chart-row { grid-template-columns: 1fr auto; gap: 6px 12px; }
+  .chart-row .track { grid-column: 1 / -1; grid-row: 2; }
+}
+
+/* ---------- glossary ---------- */
+.gloss { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid var(--line); }
+.term { padding: 20px 20px 22px 0; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.term:not(:nth-child(3n)) { padding-right: 28px; }
+.term h3 { font-size: 19px; }
+.term h3 em { font-style: normal; font-family: var(--f-mono); font-size: 12px; color: var(--teal); font-weight: 500; margin-left: 8px; letter-spacing: 0; }
+.term p { color: var(--fg-soft); font-size: 15px; }
+@media (max-width: 860px) { .gloss { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 560px) { .gloss { grid-template-columns: 1fr; } .term { padding-right: 0 !important; } }
+
+/* ---------- quiz + community ---------- */
+.duo { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; }
+@media (max-width: 900px) { .duo { grid-template-columns: 1fr; } }
+.quiz { background: var(--surface); border: 1px solid var(--line); border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.quiz-top { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.quiz-top h2 { font-size: 28px; }
+.quiz-progress { font-family: var(--f-mono); font-size: 13px; color: var(--fg-soft); }
+.q { font-family: var(--f-display); font-size: 21px; font-weight: 600; line-height: 1.25; }
+.opts { display: grid; gap: 10px; }
+.opt {
+  text-align: left; font: 500 15.5px var(--f-body); color: var(--fg); background: var(--surface-2);
+  border: 1.5px solid transparent; border-radius: 14px; padding: 14px 16px; cursor: pointer; min-height: 48px;
+  display: flex; align-items: center; gap: 12px;
+}
+.opt:hover:not(:disabled) { border-color: var(--fg-soft); }
+.opt .k { font-family: var(--f-mono); font-size: 12px; color: var(--fg-soft); width: 18px; flex-shrink: 0; }
+.opt.right { border-color: var(--lime-text); background: color-mix(in srgb, var(--lime) 16%, var(--surface-2)); }
+.opt.wrong { border-color: var(--c-hacks); }
+.opt:disabled { cursor: default; }
+.feedback { font-size: 15px; color: var(--fg-soft); min-height: 24px; }
+.feedback b { color: var(--fg); }
+.quiz-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn {
+  font: 600 15px var(--f-body); border-radius: 999px; padding: 12px 20px; cursor: pointer; min-height: 46px;
+  border: 1px solid var(--line); background: transparent; color: var(--fg); text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn.primary { background: var(--lime); color: var(--on-lime); border-color: var(--lime); }
+.btn:hover { filter: brightness(1.06); }
+
+.join { background: var(--lime); color: #0E1116; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; gap: 18px; position: relative; overflow: hidden; min-width: 0; }
+.join h2 { font-size: clamp(30px, 4vw, 42px); line-height: 1; letter-spacing: -0.03em; }
+.join p { font-size: 16px; color: #1B1F26; max-width: 40ch; }
+.join .btn { border-color: #0E1116; color: #0E1116; }
+.join .btn.dark { background: #0E1116; color: #F4F5F0; }
+.join .btn:focus-visible { outline-color: #0E1116; }
+.join-links { display: flex; flex-wrap: wrap; gap: 10px; }
+.join-perks { display: grid; gap: 8px; font-size: 15px; font-weight: 500; }
+.join-perks div { display: flex; gap: 10px; align-items: flex-start; }
+.join-perks svg { flex-shrink: 0; margin-top: 3px; }
+.email-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; }
+.email-row code { font-family: var(--f-mono); background: rgba(14,17,22,0.1); padding: 6px 10px; border-radius: 8px; user-select: all; }
+.copy { font: 600 13px var(--f-body); background: transparent; border: 1px solid #0E1116; color: #0E1116; border-radius: 999px; padding: 6px 12px; cursor: pointer; min-height: 34px; }
+.join-hood { position: absolute; right: -40px; bottom: -50px; width: 220px; opacity: 0.16; pointer-events: none; }
+@media (max-width: 560px) { .join-hood { display: none; } }
+
+/* ---------- coming up ---------- */
+.upcoming { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.ev { border: 1px solid var(--line); border-radius: 18px; padding: 20px; display: grid; grid-template-columns: 64px 1fr; gap: 16px; align-items: start; }
+.ev .d { font-family: var(--f-mono); text-align: center; border-radius: 12px; background: var(--surface-2); padding: 8px 0; }
+.ev .d b { display: block; font-family: var(--f-display); font-size: 24px; line-height: 1.1; }
+.ev .d span { font-size: 11px; letter-spacing: 0.08em; color: var(--fg-soft); }
+.ev h3 { font-size: 17px; line-height: 1.25; margin-bottom: 4px; }
+.ev p { font-size: 14.5px; color: var(--fg-soft); }
+@media (max-width: 860px) { .upcoming { grid-template-columns: 1fr; } }
+
+/* ---------- footer ---------- */
+footer { margin-top: 80px; border-top: 1px solid var(--line); padding-block: 36px 48px; }
+.foot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 24px; }
+.foot p { color: var(--fg-soft); font-size: 14px; max-width: 60ch; }
+.foot-links { display: flex; gap: 18px; flex-wrap: wrap; font-size: 14px; }
+.foot-links a { color: var(--fg-soft); text-underline-offset: 3px; }
+.foot-links a:hover { color: var(--fg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
 </style>
+<style>body { margin: 0; } img { max-width: 100%; }</style>
 </head>
 <body>
-<div id="progress"></div>
-<div class="wrap">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="hood" viewBox="0 0 550 550">
+      <circle cx="275" cy="275" r="215" fill="none" stroke="#2A303A" stroke-width="2" stroke-dasharray="4 10"></circle>
+      <path d="M115 175 L275 60 L435 175" fill="none" stroke="#2A303A" stroke-width="2"></path>
+      <path d="M85 560 C100 440 185 395 275 395 C365 395 450 440 465 560 Z" fill="#1F252E"></path>
+      <path d="M172 335 C160 205 210 128 275 128 C340 128 390 205 378 335 C372 385 332 418 275 418 C218 418 178 385 172 335 Z" fill="#2A313B"></path>
+      <path d="M200 330 C192 230 230 172 275 172 C320 172 358 230 350 330 C346 370 315 392 275 392 C235 392 204 370 200 330 Z" fill="#07090C"></path>
+      <g stroke="#C6F432" stroke-width="13" stroke-linecap="round">
+        <path d="M238 268 H312"></path><path d="M238 296 H285"></path><path d="M238 324 H312"></path>
+      </g>
+      <path d="M275 395 L275 470" stroke="#2A303A" stroke-width="2"></path>
+    </symbol>
+  </defs>
+</svg>
 
-  <header class="masthead">
-    <div class="hero-mark" aria-hidden="true">
-      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <rect x="18" y="14" width="64" height="76" rx="3"></rect>
-        <line x1="18" y1="30" x2="82" y2="30"></line>
-        <line x1="30" y1="42" x2="60" y2="42"></line>
-        <line x1="30" y1="52" x2="60" y2="52"></line>
-        <line x1="30" y1="62" x2="60" y2="62"></line>
-        <circle cx="70" cy="72" r="14"></circle>
-        <path d="M 64 72 L 68 76 L 77 67"></path>
-      </svg>
+<nav class="nav" aria-label="Main">
+  <div class="wrap nav-inner">
+    <a class="brand" href="#top" aria-label="Its Just Crypto, home">
+      <span class="brand-mark" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1116" stroke-width="2.6" stroke-linecap="round"><path d="M4 7h16"></path><path d="M4 12h10"></path><path d="M4 17h16"></path></svg>
+      </span>
+      <span class="brand-name">Its Just Crypto<b>.</b></span>
+    </a>
+    <div class="nav-links">
+      <a href="#stories">Stories</a>
+      <a href="#hacks">Hacks</a>
+      <a href="#explained">Explained</a>
+      <a href="#quiz">Quiz</a>
     </div>
-    <div class="masthead-top">
-      <span>DIGITAL ASSET FINANCIAL REPORTING</span>
-      <span id="last-updated">UPDATED 10 NOV 2026</span>
-    </div>
-    <h1 class="title">Its Just Crypto</h1>
-    <p class="subtitle">A running record of what IASB, FASB and AICPA are actually doing about crypto and digital asset accounting — kept by an ACA trainee auditing crypto and digital asset funds.</p>
-    <p class="intro">Standard-setters move slowly and in fragments — a meeting paper here, a practice aid update there. This page collects the developments that matter for anyone accounting for or auditing digital assets, in plain terms, as they happen. No hot takes, no price talk — just what changed, who changed it, and why it's relevant to the work.</p>
-    <div class="filters" id="filters" role="group" aria-label="Filter by standard-setter">
-      <button class="chip" type="button" data-filter="all" aria-pressed="true">All</button>
-      <button class="chip" type="button" data-filter="iasb" aria-pressed="false"><span class="dot iasb"></span>IASB</button>
-      <button class="chip" type="button" data-filter="fasb" aria-pressed="false"><span class="dot fasb"></span>FASB</button>
-      <button class="chip" type="button" data-filter="aicpa" aria-pressed="false"><span class="dot aicpa"></span>AICPA</button>
-    </div>
-  </header>
-
-  <div class="log-controls">
-    <span id="entry-count">7 developments logged</span>
-    <button class="toggle-all" id="toggleAll" type="button">Expand all</button>
+    <a class="nav-cta" href="#join">Join free</a>
   </div>
+</nav>
 
-  <section class="log" id="log">
+<main id="top">
+  <div class="wrap">
 
-    <article class="entry" data-body="iasb" id="entry-07">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-07">
-        <span class="entry-num-col">
-          <span class="entry-icon iasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><line x1="14.5" y1="14.5" x2="20" y2="20"></line></svg>
-          </span>
-          <span class="entry-num">01</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag iasb">IASB</span>
-            <span class="entry-date">27 OCT 2026</span>
-            <span class="status">direction under discussion</span>
-          </span>
-          <h2 class="entry-title">IASB members back a standalone crypto project</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-07">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner iasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <circle class="banner-fill" cx="130" cy="45" r="34"></circle>
-                <circle class="banner-line" cx="130" cy="45" r="34"></circle>
-                <ellipse class="banner-line" cx="130" cy="45" rx="14" ry="34"></ellipse>
-                <line class="banner-line" x1="96" y1="45" x2="164" y2="45"></line>
-                <path class="banner-line" d="M101 28 Q130 40 159 28"></path>
-                <path class="banner-line" d="M101 62 Q130 50 159 62"></path>
-                <circle class="banner-line" cx="188" cy="60" r="17"></circle>
-                <line class="banner-line" x1="200" y1="72" x2="216" y2="88"></line>
-              </svg>
-            </div>
-            <p>At its 27 October meeting on the IAS 38 review, there was strong and widespread support among IASB members for carving cryptocurrencies and carbon credits out of the intangible assets project and handling each as a separate, standalone project. Members argued that leaving them inside the broader review would hurt the Board&rsquo;s credibility, and some suggested a crypto project could move quickly by drawing on the FASB&rsquo;s recent work (ASU 2023-08 and its follow-on projects). Not everyone agreed &mdash; some members preferred to keep the topic inside IAS 38 &mdash; and no formal decision has been recorded yet; the staff will bring back a recommendation on project direction. Earlier in the month, the FASB walked the Accounting Standards Advisory Forum through its crypto projects.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              This is the first real sign in years that IFRS reporters could get a purpose-built crypto answer instead of stretching IAS 38 and IAS 2. If the Board follows the FASB&rsquo;s lead, fair value through profit or loss is the obvious starting point &mdash; but it is still a direction of travel, not a decision. Watch for the formal vote on project direction.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/october/intangible-assets" target="_blank" rel="noopener">IAS Plus &mdash; October 2026 IASB meeting</a>
-              <button class="copy-link" type="button" data-entry="entry-07">Copy link</button>
-            </div>
-          </div>
+    <header class="hero">
+      <div>
+        <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Week of 10 November 2026</span>
+        <h1>Crypto news,<br>minus the <span>noise.</span></h1>
+        <p class="hero-sub">Hacks, new laws, politics and the coins everyone is talking about, explained in plain English for students, young professionals and the crypto-curious.</p>
+        <div class="hero-tags" aria-label="Who it's for">
+          <span>Students</span><span>Young professionals</span><span>Accountants</span><span>Just curious</span>
         </div>
+      </div>
+      <div class="hero-art">
+        <svg role="img" aria-label="The Its Just Crypto logo: a hooded figure with a ledger mark for a face, under an arc of linked blocks" viewBox="0 0 550 550">
+          <defs><clipPath id="disc"><circle cx="275" cy="275" r="275"></circle></clipPath></defs>
+          <g clip-path="url(#disc)">
+            <circle cx="275" cy="275" r="275" fill="#151A21"></circle>
+            <use href="#hood"></use>
+            <rect class="blk b1" x="97" y="157" width="36" height="36" rx="8" fill="#4FD1C5"></rect>
+            <rect class="blk b2" x="257" y="42" width="36" height="36" rx="8" fill="#C6F432"></rect>
+            <rect class="blk b3" x="417" y="157" width="36" height="36" rx="8" fill="#F4F5F0"></rect>
+          </g>
+        </svg>
+        <span class="float-tag t1">BTC <span class="down">$73.7k</span></span>
+        <span class="float-tag t2">INJ <span class="up">+14.6% wk</span></span>
+      </div>
+    </header>
+
+    <!-- LEAD STORY -->
+    <article class="lead" id="lead">
+      <div class="lead-visual">
+        <span class="tag hacks">Hacks · Lead story</span>
+        <div class="lead-amount">$6.36bn<small>taken from Binance in about 20 minutes</small></div>
+        <div class="lead-compare" aria-label="Compared with the previous record">
+          <div class="row"><span>Binance '26</span><span class="bar"><i style="width:100%"></i></span><span>$6.36bn</span></div>
+          <div class="row"><span>Bybit '25</span><span class="bar"><i style="width:23.6%"></i></span><span>$1.5bn</span></div>
+        </div>
+      </div>
+      <div class="lead-body">
+        <div class="meta"><span>29 Oct 2026</span><span class="sep"></span><span>4 min read</span></div>
+        <h2>The biggest crypto heist ever started with one laptop</h2>
+        <p>On the evening of 29 October, attackers drained about <strong>$6.36 billion</strong> from Binance wallets across ten blockchains, most of it within roughly 20 minutes. Binance says the way in was a <strong>compromised DevOps engineer's laptop</strong>, which let the attackers push unauthorised withdrawals through an internal system. It says it has found no sign that a wallet's private key leaked.</p>
+        <p>Blockchain analytics firm TRM links the attack to North Korea's Lazarus Group (also tracked as TraderTraitor). Binance hasn't named anyone, and North Korea denies it. Roughly <strong>$3 billion</strong> has since been frozen on-chain, and Binance says it covered users' losses from its own balance sheet, including its SAFU emergency fund.</p>
+        <div class="why"><b>Why it matters to you</b>Even the largest exchange can be hit through one person's device. If you keep coins on an exchange, you are trusting its security. Turn on two-factor sign-in and think about moving long-term holdings to a wallet you control.</div>
+        <p class="src">Sources: <a href="https://www.bleepingcomputer.com/news/security/binance-links-63-billion-crypto-theft-to-compromised-devops-laptop/amp/" target="_blank" rel="noopener">BleepingComputer</a> · <a href="https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history" target="_blank" rel="noopener">TRM Labs</a> · <a href="https://www.washingtonpost.com/technology/2026/10/29/suspected-binance-hack-sets-off-scramble-lock-down-billions-crypto/" target="_blank" rel="noopener">Washington Post</a></p>
       </div>
     </article>
 
-    <article class="entry" data-body="iasb" id="entry-03">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-03">
-        <span class="entry-num-col">
-          <span class="entry-icon iasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"></circle><line x1="14.5" y1="14.5" x2="20" y2="20"></line></svg>
-          </span>
-          <span class="entry-num">02</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag iasb">IASB</span>
-            <span class="entry-date">22&ndash;24 SEP 2026</span>
-            <span class="status">no crypto-specific project</span>
-          </span>
-          <h2 class="entry-title">IAS 38 review moves ahead &mdash; but crypto still isn&rsquo;t on the table</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-03">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner iasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <circle class="banner-fill" cx="130" cy="45" r="34"></circle>
-                <circle class="banner-line" cx="130" cy="45" r="34"></circle>
-                <ellipse class="banner-line" cx="130" cy="45" rx="14" ry="34"></ellipse>
-                <line class="banner-line" x1="96" y1="45" x2="164" y2="45"></line>
-                <path class="banner-line" d="M101 28 Q130 40 159 28"></path>
-                <path class="banner-line" d="M101 62 Q130 50 159 62"></path>
-                <circle class="banner-line" cx="188" cy="60" r="17"></circle>
-                <line class="banner-line" x1="200" y1="72" x2="216" y2="88"></line>
-              </svg>
-            </div>
-            <p>The IASB&rsquo;s focused review of IAS 38 (Intangible Assets) is under way, but its September meeting worked through test cases on the definition and recognition of intangible assets &mdash; rights to access intellectual property and software-as-a-service arrangements &mdash; with no decisions reached and nothing on cryptoassets. Despite earlier reports that crypto would be folded into this review, the IASB has not started a crypto-specific project: cryptoassets remain on its list of potential projects to add only if capacity allows. The 2019 IFRS Interpretations Committee agenda decision still sets the treatment &mdash; IAS 38 for most holdings, IAS 2 where they are held for sale in the ordinary course of business. Separately, the UK Endorsement Board launched descriptive research on digital assets and liabilities on 10 September 2026.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              For IFRS reporters nothing changed at this meeting: cost or revaluation under IAS 38 (revaluation only with an active market), or IAS 2 for broker-traders. That picture started to shift a month later &mdash; see the October entry above. The UKEB research is also worth watching for UK work.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/september/intangible-assets" target="_blank" rel="noopener">IAS Plus &mdash; September 2026 IASB meeting</a>
-              <button class="copy-link" type="button" data-entry="entry-03">Copy link</button>
-            </div>
+    <!-- NUMBERS -->
+    <section class="section" aria-labelledby="numbers-h">
+      <div class="section-head">
+        <div><p class="kicker">The week in numbers</p><h2 id="numbers-h">Four figures to know</h2></div>
+      </div>
+      <div class="numbers">
+        <div class="num"><span class="v">$1.28bn</span><span class="l">pulled out of US spot bitcoin ETFs, 2–6 Nov</span></div>
+        <div class="num"><span class="v">$73,708</span><span class="l">bitcoin's low after the midterms, its weakest since August</span></div>
+        <div class="num"><span class="v">49–50</span><span class="l">the Senate vote that stalled the CLARITY Act in September</span></div>
+        <div class="num"><span class="v">92%</span><span class="l">of candidates backed by crypto super PAC Fairshake won</span></div>
+      </div>
+    </section>
+
+    <!-- FEED -->
+    <section class="section" id="stories" aria-labelledby="stories-h">
+      <div class="section-head">
+        <div><p class="kicker">Latest stories</p><h2 id="stories-h">What's moving crypto</h2></div>
+        <p>Tap a story to read the full thing. Each one ends with what it means for you.</p>
+      </div>
+      <div class="chips" role="group" aria-label="Filter stories by topic">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-f="politics" aria-pressed="false" style="--dc:var(--c-politics)"><i></i>Politics</button>
+        <button class="chip" type="button" data-f="laws" aria-pressed="false" style="--dc:var(--c-laws)"><i></i>New laws</button>
+        <button class="chip" type="button" data-f="markets" aria-pressed="false" style="--dc:var(--c-markets)"><i></i>Markets</button>
+        <button class="chip" type="button" data-f="hacks" aria-pressed="false" style="--dc:var(--c-hacks)"><i></i>Hacks</button>
+        <button class="chip" type="button" data-f="acct" aria-pressed="false" style="--dc:var(--c-acct)"><i></i>For accountants</button>
+      </div>
+
+      <div class="feed" id="feed">
+
+        <article class="card wide" data-t="politics">
+          <span class="tag politics">Politics</span>
+          <h3>Crypto spent $150m+ on the US midterms. It didn't get what it wanted.</h3>
+          <p class="dek">Democrats came out on top on 3 November, and some of the industry's loudest critics are set to run the committees that write crypto rules.</p>
+          <div class="mini-stat">
+            <div><b>$154.5m</b>Fairshake network spend</div>
+            <div><b>86 / 93</b>backed candidates who won</div>
+            <div><b>$60m+</b>spent trying to beat Sherrod Brown</div>
+          </div>
+          <div class="more"><div>
+            <p>Crypto super PAC Fairshake and its allies spent about $154.5 million across 93 races, and most of their candidates won. The headline loss was Ohio: Sherrod Brown, a long-time crypto sceptic, won his way back to the Senate despite more than $60 million spent against him. Two House Republicans who led on digital asset policy, Bryan Steil and Bill Huizenga, also lost.</p>
+            <p>Markets didn't love it. Bitcoin briefly topped $80,000 on 4 November, then slid to about $73,700 as a tech-stock sell-off and the election result landed together. TD Cowen's Jaret Seiberg said the result is "souring the political environment for crypto".</p>
+            <div class="why"><b>Why it matters to you</b>US rules shape the whole market, including the apps you use in the UK. A tougher Congress means pro-crypto laws are likely to move more slowly from January.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>4–6 Nov</span><span class="sep"></span><span>3 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Sources: <a href="https://fortune.com/2026/11/04/crypto-pacs-170-million-midterms-came-up-dry/" target="_blank" rel="noopener">Fortune</a> · <a href="https://www.usnews.com/news/politics/articles/2026-11-04/cryptos-midterm-spending-spree-stumbles-as-democrats-rack-up-big-wins" target="_blank" rel="noopener">US News</a></p>
+        </article>
+
+        <article class="card" data-t="laws">
+          <span class="tag laws">New laws · US</span>
+          <h3>America's big crypto bill is stuck, and the clock is running</h3>
+          <p class="dek">The CLARITY Act sailed through the House in 2025, then fell one vote short in the Senate.</p>
+          <div class="more"><div>
+            <p>The bill would decide which regulator oversees which tokens: the SEC for securities, the CFTC for commodities. On 15 September it failed a procedural vote 49 to 50, well short of the 60 needed. Arguments over DeFi, ethics rules for officials who hold crypto, and how it fits with last year's GENIUS stablecoin law are still unresolved.</p>
+            <p>The lame-duck session before January is the last realistic window this Congress. After that, a new Congress may start again from scratch.</p>
+            <div class="why"><b>Why it matters to you</b>Clear rules tend to bring in banks and big investors. Without them, US firms stay cautious and new products launch elsewhere first.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>15 Sep</span><span class="sep"></span><span>2 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Sources: <a href="https://www.americanbanker.com/news/crypto-market-structure-bill-fails-in-senate-vote-49-50" target="_blank" rel="noopener">American Banker</a> · <a href="https://www.lw.com/en/us-crypto-policy-tracker/legislative-developments" target="_blank" rel="noopener">Latham & Watkins tracker</a></p>
+        </article>
+
+        <article class="card" data-t="markets">
+          <span class="tag markets">Markets</span>
+          <h3>It's not altcoin season. It's "pick your coin" season.</h3>
+          <p class="dek">Bitcoin is holding about 60% of the whole crypto market, its biggest share since May.</p>
+          <div class="mini-stat">
+            <div><b class="pos">+14.6%</b>Injective, week to early Nov</div>
+            <div><b>47 / 100</b>Altcoin Season Index</div>
+          </div>
+          <div class="more"><div>
+            <p>When nervous money flows into crypto, it goes to bitcoin first. That's why BTC "dominance" is near 60%. A few coins still had big moments: PEPE was one of October's best large caps with no obvious reason, and Injective led the weekly gainers in early November.</p>
+            <p>CoinMarketCap's Altcoin Season Index sits at 47. "Altseason" usually means 75 or above.</p>
+            <div class="why"><b>Why it matters to you</b>Big weekly percentages on small coins often come from borrowed money (leverage) and can reverse just as fast. A sharp rise is not evidence that a project is any good.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>Early Nov</span><span class="sep"></span><span>2 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Sources: <a href="https://beincrypto.com/top-3-altcoins-second-week-november/" target="_blank" rel="noopener">BeInCrypto</a> · <a href="https://cryptonarratives.substack.com/p/october-2026-recap-narratives-best" target="_blank" rel="noopener">Crypto Narratives</a></p>
+        </article>
+
+        <article class="card" data-t="laws">
+          <span class="tag laws">New laws · UK</span>
+          <h3>The UK finally has its stablecoin rulebook</h3>
+          <p class="dek">The FCA published final rules in June. Issuers get until 25 October 2027 to comply.</p>
+          <div class="more"><div>
+            <p>Any UK-issued stablecoin will need to be fully backed by safe assets and redeemable at face value, so £1 of coin must always be swappable for £1. Smaller issuers will be supervised by the FCA. Big "systemic" ones, the kind millions of people might use for payments, will also be supervised by the Bank of England.</p>
+            <div class="why"><b>Why it matters to you</b>If you're in the UK, this is the framework that decides whether a pound-backed coin from your bank or a fintech is something you can trust.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>30 Jun</span><span class="sep"></span><span>2 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Sources: <a href="https://www.fca.org.uk/publications/policy-statements/cryptoasset-regime" target="_blank" rel="noopener">FCA</a> · <a href="https://www.bankofengland.co.uk/paper/2026/boe-and-fcas-approach-to-joint-regulation-of-systemic-stablecoin-issuers" target="_blank" rel="noopener">Bank of England</a></p>
+        </article>
+
+        <article class="card" data-t="hacks">
+          <span class="tag hacks">Hacks</span>
+          <h3>The hacker who gave 85% back</h3>
+          <p class="dek">In September, $319m in bitcoin was drained from Blockstream's Liquid sidechain. Then most of it came home.</p>
+          <div class="more"><div>
+            <p>Until Binance, Liquid was 2026's biggest theft. In a twist that happens more often than you'd think, the attacker returned about 85% of the funds. These deals are often struck as a "bug bounty": the hacker keeps a cut and the project stops pursuing them.</p>
+            <div class="why"><b>Why it matters to you</b>Getting money back after a hack is the exception. Plan as if stolen funds are gone for good.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>6 Sep</span><span class="sep"></span><span>1 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Source: <a href="https://www.trmlabs.com/resources/blog/2026s-biggest-hack-to-date-attackers-drained-usd-319-million-in-bitcoin-from-liquid-network-then-returned-85-of-funds" target="_blank" rel="noopener">TRM Labs</a></p>
+        </article>
+
+        <article class="card full" data-t="acct">
+          <span class="tag acct">For accountants</span>
+          <h3>Could stablecoins count as cash? FASB has put forward an answer.</h3>
+          <p class="dek">The standard-setter has proposed when some stablecoins can be treated as cash equivalents.</p>
+          <div class="more"><div>
+            <p>Under today's US rules (ASU 2023-08), most crypto is measured at fair value, with gains and losses going through profit. Stablecoins sit awkwardly in that model, so FASB has proposed guidance on when they can count as cash equivalents. Separately, the AICPA's digital assets guide now has a full chapter on stablecoin issuers.</p>
+            <div class="why"><b>Why it matters to you</b>If you're training or auditing, expect this on client balance sheets soon. "Cash equivalent" or "intangible" changes how a company looks to lenders and investors.</div>
+          </div></div>
+          <div class="card-foot">
+            <span class="meta"><span>Apr–Aug</span><span class="sep"></span><span>2 min</span></span>
+            <button class="read-btn" type="button" aria-expanded="false">Read more <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 9l6 6 6-6"></path></svg></button>
+          </div>
+          <p class="src" hidden>Sources: <a href="https://dart.deloitte.com/USDART/home/publications/deloitte/heads-up/2026/fasb-proposes-enhancements-disclosures-cash-equivalents-clarifications-evaluation-certain-digital-as" target="_blank" rel="noopener">Deloitte Heads Up</a> · <a href="https://www.aicpa-cima.com/news/article/aicpa-provides-new-guidance-on-stablecoins-mining-revenue-and-current-auditing-standards" target="_blank" rel="noopener">AICPA &amp; CIMA</a></p>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- HACK CHART -->
+    <section class="section" id="hacks" aria-labelledby="hacks-h">
+      <div class="section-head">
+        <div><p class="kicker">2026 so far</p><h2 id="hacks-h">The year's biggest hacks, to scale</h2></div>
+        <p>Every other hack this year put together is still under a third of what was taken from Binance.</p>
+      </div>
+      <div class="chart-box">
+        <div class="chart" role="list">
+          <div class="chart-row" role="listitem"><div class="who">Binance<span>29 Oct · exchange</span></div><div class="track"><i style="width:100%"></i></div><div class="amt">$6.36bn</div></div>
+          <div class="chart-row muted" role="listitem"><div class="who">Bitget<span>24 Sep · exchange</span></div><div class="track"><i style="width:6.1%"></i></div><div class="amt">$388m</div></div>
+          <div class="chart-row muted" role="listitem"><div class="who">Liquid Network<span>6 Sep · 85% returned</span></div><div class="track"><i style="width:5.0%"></i></div><div class="amt">$319m</div></div>
+          <div class="chart-row muted" role="listitem"><div class="who">KelpDAO<span>19 Apr · DeFi</span></div><div class="track"><i style="width:4.6%"></i></div><div class="amt">$292m</div></div>
+          <div class="chart-row muted" role="listitem"><div class="who">Drift Protocol<span>1 Apr · DeFi</span></div><div class="track"><i style="width:4.5%"></i></div><div class="amt">$285m</div></div>
+          <div class="chart-row muted" role="listitem"><div class="who">Coldcard wallets<span>30 Jul · self-custody</span></div><div class="track"><i style="width:1.8%"></i></div><div class="amt">$115m</div></div>
+        </div>
+        <p class="chart-note">Amounts are as first reported and some estimates vary. Coldcard is shown at the low end of a $115–130m range. Sources: <a class="src" href="https://www.trmlabs.com/resources/blog/north-korea-steals-usd-6-36-billion-from-binance-in-the-largest-hack-in-history" target="_blank" rel="noopener">TRM Labs</a>, <a class="src" href="https://www.thestreet.com/crypto/markets/major-defi-hack-becomes-the-largest-of-2026-yet" target="_blank" rel="noopener">TheStreet</a>.</p>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section class="section" id="explained" aria-labelledby="gloss-h">
+      <div class="section-head">
+        <div><p class="kicker">Crypto, explained</p><h2 id="gloss-h">Words from this week's news</h2></div>
+        <p>New to all this? Here's what this week's jargon means.</p>
+      </div>
+      <div class="gloss">
+        <div class="term"><h3>Hot wallet<em>noun</em></h3><p>A crypto wallet connected to the internet so it can send funds quickly. Exchanges use them for withdrawals, which is why hackers go after them.</p></div>
+        <div class="term"><h3>Stablecoin<em>noun</em></h3><p>A token designed to always be worth one unit of a real currency, like $1 or £1, backed by cash and government bonds.</p></div>
+        <div class="term"><h3>Spot bitcoin ETF<em>noun</em></h3><p>A fund you can buy through a normal brokerage that holds real bitcoin. Money leaving these funds ("outflows") is a quick read on investor mood.</p></div>
+        <div class="term"><h3>BTC dominance<em>metric</em></h3><p>Bitcoin's share of the total value of all crypto. When it rises, investors are playing it safe.</p></div>
+        <div class="term"><h3>Super PAC<em>US politics</em></h3><p>A US group that can raise and spend unlimited money on adverts for or against candidates, as long as it doesn't coordinate with campaigns directly.</p></div>
+        <div class="term"><h3>Lame duck<em>US politics</em></h3><p>The weeks between an election and when the new Congress takes over in January. The outgoing lawmakers can still pass bills.</p></div>
+      </div>
+    </section>
+
+    <!-- QUIZ + JOIN -->
+    <section class="section" aria-label="Quiz and community">
+      <div class="duo">
+        <div class="quiz" id="quiz">
+          <div class="quiz-top"><h2>Were you paying attention?</h2><span class="quiz-progress" id="qProg">1 / 4</span></div>
+          <p class="q" id="qText"></p>
+          <div class="opts" id="qOpts"></div>
+          <p class="feedback" id="qFb" aria-live="polite"></p>
+          <div class="quiz-actions">
+            <button class="btn primary" type="button" id="qNext" hidden>Next question</button>
+            <button class="btn" type="button" id="qAgain" hidden>Play again</button>
+          </div>
+        </div>
+
+        <div class="join" id="join">
+          <svg class="join-hood" viewBox="0 0 550 550" aria-hidden="true"><use href="#hood"></use></svg>
+          <h2>Join the community</h2>
+          <p>One free email a week with the stories that matter, plus the people who've signed up to talk about them.</p>
+          <div class="join-perks">
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1116" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>A 5-minute weekly roundup, no jargon</div>
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1116" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>Reader polls and questions answered in the next issue</div>
+            <div><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0E1116" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"></path></svg>A monthly deep-dive for accountants</div>
+          </div>
+          <div class="join-links">
+            <a class="btn dark" href="https://itsjustcrypto.substack.com/subscribe" target="_blank" rel="noopener">Subscribe on Substack</a>
+            <a class="btn" href="https://www.instagram.com/itsjust.crypto" target="_blank" rel="noopener">Instagram @itsjust.crypto</a>
+            <a class="btn" href="https://www.linkedin.com/in/davidtitilola43" target="_blank" rel="noopener">Follow on LinkedIn</a>
+          </div>
+          <div class="email-row">
+            <span>Got a story tip or question?</span>
+            <code id="mail">davidtitilola43@gmail.com</code>
+            <button class="copy" type="button" id="copyMail">Copy</button>
           </div>
         </div>
       </div>
-    </article>
+    </section>
 
-    <article class="entry" data-body="aicpa" id="entry-01">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-01">
-        <span class="entry-num-col">
-          <span class="entry-icon aicpa" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"></circle><line x1="12" y1="5" x2="12" y2="9"></line><line x1="8" y1="15" x2="16" y2="15"></line></svg>
-          </span>
-          <span class="entry-num">03</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag aicpa">AICPA</span>
-            <span class="entry-date">25 AUG 2026</span>
-            <span class="status">practice aid updated</span>
-          </span>
-          <h2 class="entry-title">Digital Assets practice aid gets a dedicated stablecoin chapter</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-01">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner aicpa" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <circle class="banner-fill" cx="60" cy="45" r="30"></circle>
-                <circle class="banner-line" cx="60" cy="45" r="30"></circle>
-                <line class="banner-line" x1="60" y1="30" x2="60" y2="60"></line>
-                <path class="banner-line" d="M50 38 h20"></path>
-                <path class="banner-line" d="M50 52 h20"></path>
-                <line class="banner-line-soft" x1="94" y1="45" x2="196" y2="45"></line>
-                <circle class="banner-line" cx="130" cy="45" r="3"></circle>
-                <circle class="banner-line" cx="162" cy="45" r="3"></circle>
-                <rect class="banner-fill" x="210" y="18" width="70" height="54" rx="4"></rect>
-                <rect class="banner-line" x="210" y="18" width="70" height="54" rx="4"></rect>
-                <line class="banner-line" x1="222" y1="32" x2="268" y2="32"></line>
-                <line class="banner-line" x1="222" y1="42" x2="268" y2="42"></line>
-                <line class="banner-line" x1="222" y1="52" x2="252" y2="52"></line>
-              </svg>
-            </div>
-            <p>The AICPA refreshed <em>Accounting for and Auditing of Digital Assets</em> with a new chapter specifically on stablecoin issuers — covering how to recognise the obligations tied to issued tokens and how to account for the reserve assets backing them. A second addition sets out auditing considerations for mining revenue arrangements, and the aid was rolled forward to reflect recently effective auditing standards.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              If any of your engagements touch stablecoin issuance or reserve-backed tokens, this is the first place to check for non-authoritative guidance before you have to reason from first principles. Mining revenue recognition has been a grey area for a while — this narrows it.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://www.aicpa-cima.com/news/article/aicpa-provides-new-guidance-on-stablecoins-mining-revenue-and-current-auditing-standards" target="_blank" rel="noopener">AICPA &amp; CIMA announcement</a>
-              <button class="copy-link" type="button" data-entry="entry-01">Copy link</button>
-            </div>
-          </div>
-        </div>
+    <!-- COMING UP -->
+    <section class="section" aria-labelledby="up-h">
+      <div class="section-head">
+        <div><p class="kicker">Diary</p><h2 id="up-h">Coming up</h2></div>
       </div>
-    </article>
-
-    <article class="entry" data-body="fasb" id="entry-05">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-05">
-        <span class="entry-num-col">
-          <span class="entry-icon fasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M3 8h13"></path><path d="M13 4l4 4-4 4"></path><path d="M21 16H8"></path><path d="M11 20l-4-4 4-4"></path></svg>
-          </span>
-          <span class="entry-num">04</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag fasb">FASB</span>
-            <span class="entry-date">19 AUG 2026</span>
-            <span class="status">proposal expected q1 2027</span>
-          </span>
-          <h2 class="entry-title">FASB decides lent crypto stays on the lender&rsquo;s balance sheet</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-05">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner fasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <rect class="banner-fill" x="20" y="24" width="64" height="42" rx="4"></rect>
-                <rect class="banner-line" x="20" y="24" width="64" height="42" rx="4"></rect>
-                <line class="banner-line" x1="30" y1="38" x2="74" y2="38"></line>
-                <line class="banner-line" x1="30" y1="48" x2="60" y2="48"></line>
-                <rect class="banner-fill" x="236" y="24" width="64" height="42" rx="4"></rect>
-                <rect class="banner-line" x="236" y="24" width="64" height="42" rx="4"></rect>
-                <line class="banner-line" x1="246" y1="38" x2="290" y2="38"></line>
-                <line class="banner-line" x1="246" y1="48" x2="276" y2="48"></line>
-                <path class="banner-line" d="M96 34 H210"></path>
-                <path class="banner-line" d="M198 24 L212 34 L198 44"></path>
-                <path class="banner-line" d="M224 56 H110"></path>
-                <path class="banner-line" d="M122 46 L108 56 L122 66"></path>
-              </svg>
-            </div>
-            <p>Continuing its crypto transfers project, the FASB tentatively decided that a lender of crypto assets should keep recognising the lent asset rather than derecognise it &mdash; reclassifying it as an encumbered asset, measured at fair value adjusted for the borrower&rsquo;s credit risk. For transfers other than lending, the Board will keep applying the ASC 606 control model, supplemented by crypto-specific implementation guidance. This builds on its April decision to bring wrapped and receipt tokens into Subtopic 350-60. Staff have been directed to draft a proposed ASU. It has not been published yet: the FASB now expects to issue it in the first quarter of 2027, with a 60-day comment period.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              Crypto lending is common in fund structures, and practice has been split on whether lent tokens come off the balance sheet. If this survives the exposure draft, expect lent positions to stay on the books with a separate encumbered line and a credit-risk adjustment &mdash; one more fair value input to audit.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://kpmg.com/us/en/frv/reference-library/2026/fasb-makes-progress-crypto-asset-transfers-project.html" target="_blank" rel="noopener">KPMG summary of the decisions</a>
-              <button class="copy-link" type="button" data-entry="entry-05">Copy link</button>
-            </div>
-          </div>
-        </div>
+      <div class="upcoming">
+        <div class="ev"><div class="d"><b>15</b><span>NOV</span></div><div><h3>Solana Breakpoint, London</h3><p>Solana's big yearly conference runs 15–17 November. It usually brings new launches and announcements.</p></div></div>
+        <div class="ev"><div class="d"><b>18</b><span>NOV</span></div><div><h3>Fed meeting minutes</h3><p>Traders are watching for signs of a December rate rise. Higher rates usually hit crypto prices.</p></div></div>
+        <div class="ev"><div class="d"><b>Dec</b><span>2026</span></div><div><h3>Lame-duck Congress</h3><p>The last chance for the CLARITY Act before the new Congress arrives in January.</p></div></div>
       </div>
-    </article>
+    </section>
 
-    <article class="entry" data-body="fasb" id="entry-06">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-06">
-        <span class="entry-num-col">
-          <span class="entry-icon fasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"></circle><path d="M9 10h6"></path><path d="M9 14h6"></path><line x1="12" y1="7" x2="12" y2="17"></line></svg>
-          </span>
-          <span class="entry-num">05</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag fasb">FASB</span>
-            <span class="entry-date">18 AUG 2026</span>
-            <span class="status">comment period closes 19 nov</span>
-          </span>
-          <h2 class="entry-title">FASB proposes when a stablecoin can count as a cash equivalent</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-06">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner fasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <circle class="banner-fill" cx="70" cy="45" r="28"></circle>
-                <circle class="banner-line" cx="70" cy="45" r="28"></circle>
-                <path class="banner-line" d="M58 39 h24"></path>
-                <path class="banner-line" d="M58 51 h24"></path>
-                <line class="banner-line-soft" x1="104" y1="45" x2="200" y2="45"></line>
-                <path class="banner-line" d="M188 37 L200 45 L188 53"></path>
-                <rect class="banner-fill" x="214" y="20" width="76" height="50" rx="4"></rect>
-                <rect class="banner-line" x="214" y="20" width="76" height="50" rx="4"></rect>
-                <path class="banner-line" d="M230 46 L242 56 L272 32"></path>
-              </svg>
-            </div>
-            <p>The FASB issued a proposed ASU, <em>Cash Equivalents &mdash; Disclosure Enhancement and Evaluation of Certain Digital Assets</em>. It leaves the definition of a cash equivalent unchanged but adds illustrative guidance on applying it to digital assets. In broad terms, a qualifying token would need an on-demand right to redeem it for a known amount of cash, held directly against the issuer, backed by segregated reserves of at least 1:1 in short-term, highly liquid assets. Separately, every entity that presents cash equivalents would have to disclose their significant components (for example Treasury bills or money market funds), whether or not it holds any digital assets. Comments are due by 19 November 2026; the effective date will be set after redeliberation, with early adoption expected to be permitted.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              This is a proposal, not GAAP &mdash; nothing should be reclassified yet. But it gives a clear test to run against any stablecoin a client holds, and most tokens bought on the secondary market (with no direct redemption right against the issuer) look likely to fail it. The new cash-equivalent disclosure will reach every client, crypto or not.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://dart.deloitte.com/USDART/home/publications/deloitte/heads-up/2026/fasb-proposes-enhancements-disclosures-cash-equivalents-clarifications-evaluation-certain-digital-as" target="_blank" rel="noopener">Deloitte Heads Up on the proposal</a>
-              <button class="copy-link" type="button" data-entry="entry-06">Copy link</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
+  </div>
+</main>
 
-    <article class="entry" data-body="fasb" id="entry-02">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-02">
-        <span class="entry-num-col">
-          <span class="entry-icon fasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M3 8h13"></path><path d="M13 4l4 4-4 4"></path><path d="M21 16H8"></path><path d="M11 20l-4-4 4-4"></path></svg>
-          </span>
-          <span class="entry-num">06</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag fasb">FASB</span>
-            <span class="entry-date">APR&ndash;JUN 2026</span>
-            <span class="status">background</span>
-          </span>
-          <h2 class="entry-title">Where the FASB&rsquo;s two crypto projects started</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-02">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner fasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <rect class="banner-fill" x="20" y="24" width="64" height="42" rx="4"></rect>
-                <rect class="banner-line" x="20" y="24" width="64" height="42" rx="4"></rect>
-                <line class="banner-line" x1="30" y1="38" x2="74" y2="38"></line>
-                <line class="banner-line" x1="30" y1="48" x2="60" y2="48"></line>
-                <rect class="banner-fill" x="236" y="24" width="64" height="42" rx="4"></rect>
-                <rect class="banner-line" x="236" y="24" width="64" height="42" rx="4"></rect>
-                <line class="banner-line" x1="246" y1="38" x2="290" y2="38"></line>
-                <line class="banner-line" x1="246" y1="48" x2="276" y2="48"></line>
-                <path class="banner-line" d="M96 34 H210"></path>
-                <path class="banner-line" d="M198 24 L212 34 L198 44"></path>
-                <path class="banner-line" d="M224 56 H110"></path>
-                <path class="banner-line" d="M122 46 L108 56 L122 66"></path>
-              </svg>
-            </div>
-            <p>On 15 April the FASB unanimously agreed to expand Subtopic 350-60 to cover crypto assets that give the holder an enforceable right to receive another crypto asset &mdash; wrapped and receipt tokens &mdash; measured at fair value and presented separately from other holdings. At the same stage it completed initial deliberations on whether stablecoins can be cash equivalents and authorised staff to draft a proposed ASU. The FASB walked the IASB through both projects at their joint education session in June.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              Kept for context: both projects have since moved on &mdash; see the August entries above for the cash-equivalents exposure draft and the lending decisions.
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://www.iasplus.com/en/meeting-types/iasb/2026/iasb-fasb-joint-education-june/crypto" target="_blank" rel="noopener">IAS Plus meeting summary</a>
-              <button class="copy-link" type="button" data-entry="entry-02">Copy link</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="entry" data-body="fasb" id="entry-04">
-      <button class="entry-head" aria-expanded="false" aria-controls="panel-04">
-        <span class="entry-num-col">
-          <span class="entry-icon fasb" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><line x1="4" y1="18" x2="20" y2="18"></line><line x1="7" y1="18" x2="7" y2="10"></line><line x1="12" y1="18" x2="12" y2="10"></line><line x1="17" y1="18" x2="17" y2="10"></line><line x1="5" y1="10" x2="19" y2="10"></line></svg>
-          </span>
-          <span class="entry-num">07</span>
-        </span>
-        <span class="entry-head-main">
-          <span class="entry-meta">
-            <span class="body-tag fasb">FASB</span>
-            <span class="entry-date">EFFECTIVE FY 2025+</span>
-            <span class="status">in force</span>
-          </span>
-          <h2 class="entry-title">The baseline: ASU 2023-08 is the standard everything else builds on</h2>
-        </span>
-        <span class="chevron" aria-hidden="true">&#9662;</span>
-      </button>
-      <div class="entry-panel" id="panel-04">
-        <div class="entry-panel-inner">
-          <div class="entry-panel-content">
-            <div class="entry-banner fasb" aria-hidden="true">
-              <svg viewBox="0 0 320 90" xmlns="http://www.w3.org/2000/svg">
-                <rect class="banner-fill" x="40" y="60" width="240" height="14" rx="2"></rect>
-                <rect class="banner-line" x="40" y="60" width="240" height="14" rx="2"></rect>
-                <rect class="banner-fill" x="70" y="40" width="80" height="18" rx="2"></rect>
-                <rect class="banner-line" x="70" y="40" width="80" height="18" rx="2"></rect>
-                <rect class="banner-fill" x="180" y="40" width="70" height="18" rx="2"></rect>
-                <rect class="banner-line" x="180" y="40" width="70" height="18" rx="2"></rect>
-                <rect class="banner-line-soft" x="90" y="18" width="46" height="18" rx="2"></rect>
-                <rect class="banner-line-soft" x="196" y="18" width="46" height="18" rx="2"></rect>
-                <path class="banner-line" d="M113 40 V36"></path>
-                <path class="banner-line" d="M219 40 V36"></path>
-              </svg>
-            </div>
-            <p>Since becoming effective for fiscal years beginning after 15 December 2024, ASU 2023-08 has required in-scope crypto intangible assets to be measured at fair value each reporting period, with changes run through net income — a major departure from the old cost-less-impairment model. Every project listed above is effectively an extension or refinement of the gap this standard left open (stablecoins, wrapped tokens, transfers) rather than a replacement for it.</p>
-            <div class="why">
-              <strong>WHY IT MATTERS</strong>
-              Worth keeping as the reference point: when a new proposal comes out, the first useful question is always "what does this change relative to 350-60."
-            </div>
-            <div class="entry-footer-row">
-              <a class="source" href="https://dart.deloitte.com/USDART/home/codification/assets/asc350-60/roadmap-digital-assets/chapter-4-subsequent-measurement/4-2-crypto-assets-that-are" target="_blank" rel="noopener">Deloitte roadmap &mdash; ASU 2023-08 scope</a>
-              <button class="copy-link" type="button" data-entry="entry-04">Copy link</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <p class="empty-state" id="emptyState">No developments logged yet for this standard-setter.</p>
-
-  </section>
-
-  <footer>
-    <p>This is a personal project, kept as a working reference rather than professional advice — always check primary sources (IASB, FASB, AICPA) before relying on anything here for client work. Entries are written and curated by hand, drawing on public standard-setter updates and reporting.</p>
-    <div class="footer-links">
-      <a href="https://www.linkedin.com/in/davidtitilola43" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://itsjustcrypto.substack.com" target="_blank" rel="noopener">Newsletter</a>
-      <a href="mailto:davidtitilola43@gmail.com">Contact</a>
+<footer>
+  <div class="wrap foot">
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <span class="brand-name">Its Just Crypto<b>.</b></span>
+      <p>Written by David Titilola, an ACA trainee who audits crypto and digital asset funds. Nothing here is financial advice. Always check the original sources before acting. Views are the author's own and don't represent any employer.</p>
     </div>
-    <p class="disclaimer">Views are the author's own and do not represent the position of any current or former employer.</p>
-  </footer>
-
-</div>
+    <div class="foot-links">
+      <a href="https://itsjustcrypto.substack.com" target="_blank" rel="noopener">Newsletter</a>
+      <a href="https://www.instagram.com/itsjust.crypto" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.linkedin.com/in/davidtitilola43" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="#top">Back to top</a>
+    </div>
+  </div>
+</footer>
 
 <script>
 (function () {
-  var entries = Array.prototype.slice.call(document.querySelectorAll('.entry'));
-  var heads = Array.prototype.slice.call(document.querySelectorAll('.entry-head'));
-  var chips = Array.prototype.slice.call(document.querySelectorAll('.chip'));
-  var toggleAllBtn = document.getElementById('toggleAll');
-  var emptyState = document.getElementById('emptyState');
-  var entryCount = document.getElementById('entry-count');
-  var progress = document.getElementById('progress');
-  var activeFilter = 'all';
-
-  function setPanelOpen(head, open) {
-    var panel = document.getElementById(head.getAttribute('aria-controls'));
-    head.setAttribute('aria-expanded', open ? 'true' : 'false');
-    panel.classList.toggle('is-open', open);
-  }
-
-  heads.forEach(function (head) {
-    head.addEventListener('click', function () {
-      var isOpen = head.getAttribute('aria-expanded') === 'true';
-      setPanelOpen(head, !isOpen);
-      updateToggleLabel();
+  // Expandable cards: move the source line inside the expanded area
+  document.querySelectorAll('.card').forEach(function (card) {
+    var src = card.querySelector('.src');
+    var inner = card.querySelector('.more > div');
+    if (src && inner) { src.hidden = false; inner.appendChild(src); }
+    var btn = card.querySelector('.read-btn');
+    if (!btn) return;
+    btn.addEventListener('click', function () {
+      var open = card.classList.toggle('open');
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      btn.firstChild.nodeValue = open ? 'Show less ' : 'Read more ';
     });
   });
 
-  function updateToggleLabel() {
-    var visibleHeads = heads.filter(function (h) {
-      return !h.closest('.entry').classList.contains('is-hidden');
-    });
-    var anyClosed = visibleHeads.some(function (h) { return h.getAttribute('aria-expanded') !== 'true'; });
-    toggleAllBtn.textContent = anyClosed ? 'Expand all' : 'Collapse all';
-  }
-
-  toggleAllBtn.addEventListener('click', function () {
-    var shouldExpand = toggleAllBtn.textContent === 'Expand all';
-    heads.forEach(function (head) {
-      if (!head.closest('.entry').classList.contains('is-hidden')) {
-        setPanelOpen(head, shouldExpand);
-      }
-    });
-    toggleAllBtn.textContent = shouldExpand ? 'Collapse all' : 'Expand all';
-  });
-
+  // Filters
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('#feed .card');
   chips.forEach(function (chip) {
     chip.addEventListener('click', function () {
-      activeFilter = chip.getAttribute('data-filter');
+      var f = chip.getAttribute('data-f');
       chips.forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
-      applyFilter();
+      cards.forEach(function (card) { card.hidden = !(f === 'all' || card.getAttribute('data-t') === f); });
     });
   });
 
-  function applyFilter() {
-    var visibleCount = 0;
-    entries.forEach(function (entry) {
-      var match = activeFilter === 'all' || entry.getAttribute('data-body') === activeFilter;
-      entry.classList.toggle('is-hidden', !match);
-      if (match) visibleCount++;
+  // Quiz
+  var Q = [
+    { q: 'How did attackers reportedly get into Binance?', o: ['A leaked wallet password on GitHub', "A compromised engineer's laptop", 'A fake Binance app', 'An insider at the company'], a: 1,
+      e: "Binance tied it to a DevOps engineer's laptop and says it found no leaked private key." },
+    { q: 'Which crypto critic won his Senate race despite $60m+ spent against him?', o: ['Sherrod Brown', 'Pete Ricketts', 'Andy Barr', 'Bryan Steil'], a: 0,
+      e: 'Sherrod Brown won back an Ohio Senate seat, the crypto PACs’ most expensive defeat.' },
+    { q: 'What does a high "BTC dominance" usually tell you?', o: ['Bitcoin is about to crash', 'Altcoins are booming', 'Investors are playing it safe with bitcoin', 'Miners are selling'], a: 2,
+      e: 'When it’s near 60%, money is crowding into bitcoin rather than smaller coins.' },
+    { q: 'Under the FCA’s new rules, a UK stablecoin must be…', o: ['Backed 50% by bitcoin', 'Approved by Parliament', 'Fully backed and redeemable at face value', 'Issued only by banks'], a: 2,
+      e: 'Full backing and redemption at par. The rules apply from 25 October 2027.' }
+  ];
+  var i = 0, score = 0;
+  var tEl = document.getElementById('qText'), oEl = document.getElementById('qOpts'), fb = document.getElementById('qFb');
+  var prog = document.getElementById('qProg'), next = document.getElementById('qNext'), again = document.getElementById('qAgain');
+  function render() {
+    var item = Q[i];
+    prog.textContent = (i + 1) + ' / ' + Q.length;
+    tEl.textContent = item.q; fb.textContent = ''; next.hidden = true; again.hidden = true;
+    oEl.innerHTML = '';
+    item.o.forEach(function (txt, idx) {
+      var b = document.createElement('button');
+      b.type = 'button'; b.className = 'opt';
+      var k = document.createElement('span'); k.className = 'k'; k.textContent = 'ABCD'[idx];
+      var s = document.createElement('span'); s.textContent = txt;
+      b.appendChild(k); b.appendChild(s);
+      b.addEventListener('click', function () { pick(idx); });
+      oEl.appendChild(b);
     });
-    emptyState.classList.toggle('is-visible', visibleCount === 0);
-    entryCount.textContent = visibleCount + (visibleCount === 1 ? ' development logged' : ' developments logged');
-    updateToggleLabel();
   }
-
-  document.querySelectorAll('.copy-link').forEach(function (btn) {
-    btn.addEventListener('click', function (e) {
-      e.stopPropagation();
-      var id = btn.getAttribute('data-entry');
-      var url = window.location.origin + window.location.pathname + '#' + id;
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(url).catch(function () {});
-      }
-      btn.setAttribute('data-copied', 'true');
-      setTimeout(function () { btn.removeAttribute('data-copied'); }, 1500);
-    });
-  });
-
-  function openFromHash() {
-    if (window.location.hash) {
-      var id = window.location.hash.substring(1);
-      var target = document.getElementById(id);
-      if (target && target.classList.contains('entry')) {
-        var head = target.querySelector('.entry-head');
-        setPanelOpen(head, true);
-        setTimeout(function () { target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
-      }
+  function pick(idx) {
+    var item = Q[i], btns = oEl.querySelectorAll('.opt');
+    btns.forEach(function (b, j) { b.disabled = true; if (j === item.a) b.classList.add('right'); else if (j === idx) b.classList.add('wrong'); });
+    if (idx === item.a) score++;
+    fb.innerHTML = '';
+    var strong = document.createElement('b'); strong.textContent = idx === item.a ? 'Correct. ' : 'Not quite. ';
+    fb.appendChild(strong); fb.appendChild(document.createTextNode(item.e));
+    if (i < Q.length - 1) { next.hidden = false; }
+    else {
+      var end = document.createElement('span');
+      end.textContent = ' You scored ' + score + ' out of ' + Q.length + '.';
+      end.style.color = 'var(--fg)'; end.style.fontWeight = '600';
+      fb.appendChild(end); again.hidden = false;
     }
   }
+  next.addEventListener('click', function () { i++; render(); });
+  again.addEventListener('click', function () { i = 0; score = 0; render(); });
+  render();
 
-  function updateProgress() {
-    var scrollTop = window.scrollY;
-    var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-    var pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    progress.style.width = pct + '%';
-  }
-
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  window.addEventListener('resize', updateProgress);
-
-  updateProgress();
-  updateToggleLabel();
-  openFromHash();
+  // Copy email
+  var cm = document.getElementById('copyMail');
+  cm.addEventListener('click', function () {
+    var text = document.getElementById('mail').textContent;
+    function selectIt() { var r = document.createRange(); r.selectNodeContents(document.getElementById('mail')); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+    try {
+      navigator.clipboard.writeText(text).then(function () { cm.textContent = 'Copied'; setTimeout(function () { cm.textContent = 'Copy'; }, 1600); }, selectIt);
+    } catch (e) { selectIt(); }
+  });
 })();
 </script>
-
 </body>
 </html>
